@@ -134,7 +134,7 @@ export function IndexingView({ collections, onRefresh }: IndexingViewProps) {
   const copyScript = useCallback(async (file: string) => {
     try {
       const res = await fetch(`/scripts/${file}`);
-      if (!res.ok) throw new Error('not found');
+      if (!res.ok) throw new Error('找不到');
       await navigator.clipboard.writeText(await res.text());
       setCopied(file);
       setTimeout(() => setCopied(''), 2500);
@@ -187,12 +187,12 @@ export function IndexingView({ collections, onRefresh }: IndexingViewProps) {
           ? (await Promise.all(entries.map((entry) => filesFromEntry(entry)))).flat()
           : (Array.from(dataTransfer.files) as RelativeFile[]);
         if (!files.length) {
-          setPickedLabel('Drop did not include readable files. Use Choose folder instead.');
+          setPickedLabel('拖曳的內容沒有可讀檔案，請改用「選擇資料夾」。');
           return;
         }
         applyPickedFiles(files);
       } catch (e) {
-        setPickedLabel(`Drop failed: ${e instanceof Error ? e.message : 'Unknown error'}`);
+        setPickedLabel(`Drop failed: ${e instanceof Error ? e.message : '未知錯誤'}`);
       }
     },
     [applyPickedFiles],
@@ -234,7 +234,7 @@ export function IndexingView({ collections, onRefresh }: IndexingViewProps) {
     }
 
     if (!useUpload && !path.trim()) {
-      setStatusMsg({ type: 'err', text: 'Choose a folder or enter a path.' });
+      setStatusMsg({ type: 'err', text: '選擇資料夾或輸入路徑。' });
       return;
     }
 
@@ -268,7 +268,7 @@ export function IndexingView({ collections, onRefresh }: IndexingViewProps) {
       }
     } catch (e) {
       if (controller.signal.aborted) {
-        setStatusMsg({ type: 'info', text: 'Indexing stopped. Completed files remain indexed.' });
+        setStatusMsg({ type: 'info', text: '已停止索引。已完成的檔案仍保留索引。' });
       } else {
         setStatusMsg({ type: 'err', text: `Error: ${e instanceof Error ? e.message : 'Unknown'}` });
       }
@@ -285,9 +285,9 @@ export function IndexingView({ collections, onRefresh }: IndexingViewProps) {
   return (
     <div className="view">
       <div className="section-h">
-        <h2>Index a folder</h2>
+        <h2>索引資料夾</h2>
         <span className="desc">
-          Local parse → chunk → embed → write to LanceDB. Your chat data stays on this machine.
+          本機解析 → 切塊 → embedding → 寫入 LanceDB。你的聊天資料不會離開這台電腦。
         </span>
       </div>
 
@@ -310,12 +310,12 @@ export function IndexingView({ collections, onRefresh }: IndexingViewProps) {
             <b style={{ color: 'var(--text-1)' }}>OpenRouter</b> — no built-in export. Run a
             browser-console script, then index the downloaded folder:
             <ol style={{ margin: '6px 0', paddingLeft: 20, lineHeight: 1.7 }}>
-              <li>Open openrouter.ai signed in, with your chat list visible.</li>
+              <li>在已登入的 openrouter.ai 開啟聊天清單。</li>
               <li>
-                Open DevTools → Console (<kbd>F12</kbd>).
+                開啟 DevTools → Console（<kbd>F12</kbd>).
               </li>
-              <li>Copy a script below, paste into the console, press Enter.</li>
-              <li>Allow “multiple downloads” if asked; then index the folder here.</li>
+              <li>複製下方腳本，貼到 Console 後按 Enter。</li>
+              <li>若被詢問，請允許「多個下載」；然後在這裡索引該資料夾。</li>
             </ol>
             <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
               <button
@@ -344,13 +344,13 @@ export function IndexingView({ collections, onRefresh }: IndexingViewProps) {
             folder (paste into “paste path” below):
             <ul style={{ margin: '6px 0', paddingLeft: 20, lineHeight: 1.8 }}>
               <li>
-                Windows: <code>%USERPROFILE%\.lmstudio\conversations\</code>
+                Windows： <code>%USERPROFILE%\.lmstudio\conversations\</code>
               </li>
               <li>
                 macOS / Linux: <code>~/.lmstudio/conversations/</code>
               </li>
               <li>
-                Older builds: <code>~/.cache/lm-studio/conversations/</code>
+                舊版： <code>~/.cache/lm-studio/conversations/</code>
               </li>
             </ul>
           </div>
@@ -383,7 +383,7 @@ export function IndexingView({ collections, onRefresh }: IndexingViewProps) {
         }}
       >
         <div className="ico-big">{Icons.folder}</div>
-        <h3>Drop a folder of exports here</h3>
+        <h3>把匯出資料夾拖曳到這裡</h3>
         <p>
           Supported: Google AI Studio, OpenRouter, ChatGPT/OpenAI, Claude/Anthropic, LM Studio, and
           Grok JSON exports. Subfolders are recursed; account metadata files are skipped
@@ -415,13 +415,13 @@ export function IndexingView({ collections, onRefresh }: IndexingViewProps) {
             </span>
           )}
         </div>
-        <div style={{ fontSize: 11, color: 'var(--text-3)', margin: '4px 0' }}>or paste path</div>
+        <div style={{ fontSize: 11, color: 'var(--text-3)', margin: '4px 0' }}>或貼上路徑</div>
         <div className="path-input">
           <input
             type="text"
             value={path}
             onChange={(e) => setPath(e.target.value)}
-            placeholder="/absolute/path/to/exports"
+            placeholder="/匯出資料夾的絕對路徑"
           />
           <button className="btn" onClick={onUsePath} disabled={!path}>
             {Icons.arrowRight} Use path
@@ -430,7 +430,7 @@ export function IndexingView({ collections, onRefresh }: IndexingViewProps) {
       </div>
 
       <div className="ingest-options">
-        <label style={{ color: 'var(--text-3)' }}>Target collection</label>
+        <label style={{ color: 'var(--text-3)' }}>目標收藏集</label>
         <select
           id="targetCollectionSelect"
           value={targetColl}
@@ -448,7 +448,7 @@ export function IndexingView({ collections, onRefresh }: IndexingViewProps) {
           id="newCollectionBtnIndexing"
           className="btn sm"
           onClick={() => setNewCollOpen(true)}
-          title="Create a new collection"
+          title="建立新收藏集"
         >
           {Icons.plus} New
         </button>
@@ -461,7 +461,7 @@ export function IndexingView({ collections, onRefresh }: IndexingViewProps) {
           Clear collection first
         </label>
         <button id="ingestBtn" className="btn primary" onClick={doIndex} disabled={running}>
-          {Icons.zap} {running ? 'Indexing…' : 'Index folder'}
+          {Icons.zap} {running ? 'Indexing…' : '索引資料夾'}
         </button>
         {running && (
           <button
@@ -469,7 +469,7 @@ export function IndexingView({ collections, onRefresh }: IndexingViewProps) {
             className="btn danger"
             onClick={() => indexingController.current?.abort()}
           >
-            Stop indexing
+            停止索引
           </button>
         )}
       </div>
@@ -477,7 +477,7 @@ export function IndexingView({ collections, onRefresh }: IndexingViewProps) {
       {preview && preview.length > 0 && (
         <div className="panel">
           <div className="panel-head">
-            <h3>Ingest preview</h3>
+            <h3>匯入預覽</h3>
             <span className="sub">
               {preview.filter((f) => f.ok).length} ok · {preview.filter((f) => !f.ok).length}{' '}
               skipped
@@ -535,9 +535,9 @@ export function IndexingView({ collections, onRefresh }: IndexingViewProps) {
           </div>
           {progress.chunks != null && (
             <div className="progress-details-new">
-              Chunks: <strong>{progress.chunks.toLocaleString()}</strong>
+              區塊： <strong>{progress.chunks.toLocaleString()}</strong>
               <span style={{ color: 'var(--text-4)' }}>·</span>
-              Time: <strong>{fmtTime(progress.time ?? 0)}</strong>
+              時間： <strong>{fmtTime(progress.time ?? 0)}</strong>
             </div>
           )}
           {progress.file && (

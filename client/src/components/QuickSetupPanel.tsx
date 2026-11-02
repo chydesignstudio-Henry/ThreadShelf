@@ -9,8 +9,8 @@ interface QuickSetupPanelProps {
 }
 
 const VARIANTS = [
-  { value: '', label: 'Detect automatically' },
-  { value: 'cpu', label: 'CPU (most compatible)' },
+  { value: '', label: '自動偵測' },
+  { value: 'cpu', label: 'CPU（相容性最高）' },
   { value: 'cuda', label: 'NVIDIA CUDA' },
   { value: 'vulkan', label: 'Vulkan (AMD / Intel)' },
   { value: 'rocm', label: 'AMD ROCm' },
@@ -90,7 +90,7 @@ export function QuickSetupPanel({ onCompleted }: QuickSetupPanelProps) {
         },
         controller.signal,
       );
-      toast.success('Local generation is ready.');
+      toast.success('本機生成已就緒。');
       onCompleted?.();
       recheck();
     } catch (cause) {
@@ -102,7 +102,7 @@ export function QuickSetupPanel({ onCompleted }: QuickSetupPanelProps) {
         toast.error(cause.message);
         return;
       }
-      toast.error(cause instanceof Error ? cause.message : 'Setup failed.');
+      toast.error(cause instanceof Error ? cause.message : '設定失敗。');
     } finally {
       setRunning(false);
       abortRef.current = null;
@@ -115,12 +115,12 @@ export function QuickSetupPanel({ onCompleted }: QuickSetupPanelProps) {
   return (
     <div className="panel generation-panel">
       <div className="panel-head">
-        <h3>Set up local generation</h3>
+        <h3>設定本機生成</h3>
         <span className="sub">one screen · one confirmation</span>
       </div>
       <div className="panel-body quick-setup">
         <label className="quick-setup-variant">
-          <span>Accelerator</span>
+          <span>加速器</span>
           <select
             value={variant}
             onChange={(event) => setVariant(event.target.value)}
@@ -134,7 +134,7 @@ export function QuickSetupPanel({ onCompleted }: QuickSetupPanelProps) {
           </select>
         </label>
 
-        {loading && <p className="catalog-empty">Checking your hardware and the latest release…</p>}
+        {loading && <p className="catalog-empty">正在檢查硬體與最新版本…</p>}
         {error && <p className="catalog-error">{error}</p>}
 
         {plan && (
@@ -191,7 +191,7 @@ export function QuickSetupPanel({ onCompleted }: QuickSetupPanelProps) {
               ) : (
                 <li data-action="none">
                   <span className="quick-setup-step-title">
-                    No model selected automatically
+                    未自動選擇模型
                     <em>pick one in the model browser</em>
                   </span>
                 </li>
@@ -199,7 +199,7 @@ export function QuickSetupPanel({ onCompleted }: QuickSetupPanelProps) {
             </ol>
 
             <p className="quick-setup-destination">
-              Destination: <code>{plan.runtime.destination}</code>
+              目的地： <code>{plan.runtime.destination}</code>
               {plan.model && (
                 <>
                   {' '}
@@ -239,12 +239,12 @@ export function QuickSetupPanel({ onCompleted }: QuickSetupPanelProps) {
               </button>
               {running && (
                 <button className="btn ghost" onClick={() => abortRef.current?.abort()}>
-                  Cancel
+                  取消
                 </button>
               )}
               {!running && (
                 <button className="btn ghost" onClick={recheck}>
-                  Re-check
+                  重新檢查
                 </button>
               )}
             </div>

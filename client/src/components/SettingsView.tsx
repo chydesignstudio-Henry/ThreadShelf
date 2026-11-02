@@ -48,8 +48,8 @@ export function SettingsView({ activeColl, stats, onRefresh, onDeleted }: Settin
     }
     const ok = await confirmDialog({
       title: `Clear indexed data for "${collLabel(activeColl)}"?`,
-      message: 'All vectors are dropped, but the collection itself is kept.',
-      confirmLabel: 'Clear data',
+      message: '會刪除所有向量，但保留收藏集本身。',
+      confirmLabel: '清除資料',
       danger: true,
     });
     if (!ok) return;
@@ -58,19 +58,19 @@ export function SettingsView({ activeColl, stats, onRefresh, onDeleted }: Settin
       void onRefresh();
       toast.success(`Cleared "${collLabel(activeColl)}".`);
     } catch (e) {
-      toast.error(e instanceof Error ? e.message : 'Unknown error');
+      toast.error(e instanceof Error ? e.message : '未知錯誤');
     }
   }, [activeColl, onRefresh, clearMutation]);
 
   const doDelete = useCallback(async () => {
     if (activeColl === 'chunks' || activeColl === 'threadshelf_conversations') {
-      toast.error('Cannot delete the default collection.');
+      toast.error('無法刪除預設收藏集。');
       return;
     }
     const ok = await confirmDialog({
       title: `Delete collection "${collLabel(activeColl)}"?`,
       message:
-        'The index and copies previously uploaded through ThreadShelf are deleted. Files in the original folder you selected remain untouched.',
+        '會刪除索引與先前透過 ThreadShelf 上傳的副本。你原本選擇的資料夾中的檔案不受影響。',
       confirmLabel: 'Delete',
       danger: true,
     });
@@ -81,7 +81,7 @@ export function SettingsView({ activeColl, stats, onRefresh, onDeleted }: Settin
       toast.success(`Deleted "${collLabel(activeColl)}".`);
       onDeleted();
     } catch (e) {
-      toast.error(e instanceof Error ? e.message : 'Unknown error');
+      toast.error(e instanceof Error ? e.message : '未知錯誤');
     }
   }, [activeColl, onRefresh, onDeleted, deleteMutation]);
 
@@ -89,13 +89,13 @@ export function SettingsView({ activeColl, stats, onRefresh, onDeleted }: Settin
     return (
       <div className="view">
         <div className="section-h">
-          <h2>Collection settings</h2>
-          <span className="desc">Pick a collection from the sidebar to manage it.</span>
+          <h2>收藏集設定</h2>
+          <span className="desc">從側邊欄選擇要管理的收藏集。</span>
         </div>
         <div className="banner info">
           <span className="ico">{Icons.info}</span>
           <div className="grow">
-            Destructive actions are disabled while <b>All collections</b> is selected.
+            以下進行中時停用破壞性操作： <b>所有收藏集</b> 已選取。
           </div>
         </div>
       </div>
@@ -114,30 +114,30 @@ export function SettingsView({ activeColl, stats, onRefresh, onDeleted }: Settin
             {collLabel(activeColl)}
           </span>
         </h2>
-        <span className="desc">Local LanceDB table</span>
+        <span className="desc">本機 LanceDB 資料表</span>
       </div>
 
       <div className="panel" style={{ padding: 0 }}>
         <div className="stat-grid">
           <div className="stat">
-            <span className="k">files</span>
+            <span className="k">檔案</span>
             <span className="v">{(st?.files ?? 0).toLocaleString()}</span>
-            <span className="d">source exports</span>
+            <span className="d">來源匯出</span>
           </div>
           <div className="stat">
-            <span className="k">chunks</span>
+            <span className="k">區塊</span>
             <span className="v">{(st?.chunks ?? 0).toLocaleString()}</span>
-            <span className="d">indexed vectors</span>
+            <span className="d">已索引向量</span>
           </div>
           <div className="stat">
             <span className="k">user</span>
             <span className="v">{roles.user.toLocaleString()}</span>
-            <span className="d">user turns</span>
+            <span className="d">使用者輪次</span>
           </div>
           <div className="stat">
             <span className="k">response</span>
             <span className="v">{roles.ai.toLocaleString()}</span>
-            <span className="d">ai turns</span>
+            <span className="d">AI 輪次</span>
           </div>
         </div>
 
@@ -168,12 +168,12 @@ export function SettingsView({ activeColl, stats, onRefresh, onDeleted }: Settin
 
       <div className="panel">
         <div className="panel-head">
-          <h3>Indexed files</h3>
+          <h3>已索引檔案</h3>
           <span className="sub">{st?.files ?? 0} files</span>
         </div>
         <div className="file-list">
-          {files === null && <div className="file-list-empty">Loading…</div>}
-          {files && files.length === 0 && <div className="file-list-empty">No indexed files.</div>}
+          {files === null && <div className="file-list-empty">載入中…</div>}
+          {files && files.length === 0 && <div className="file-list-empty">沒有已索引的檔案。</div>}
           {files?.map((f, i) => {
             const short = String(f).replace(/\\/g, '/').split('/').pop();
             return (
@@ -190,8 +190,8 @@ export function SettingsView({ activeColl, stats, onRefresh, onDeleted }: Settin
 
       <div className="panel">
         <div className="panel-head">
-          <h3>Danger zone</h3>
-          <span className="sub">destructive, irreversible</span>
+          <h3>危險區域</h3>
+          <span className="sub">破壞性、無法復原</span>
         </div>
         <div className="panel-body" style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
           {activeColl === 'threadshelf_conversations' ? (
@@ -202,13 +202,13 @@ export function SettingsView({ activeColl, stats, onRefresh, onDeleted }: Settin
           ) : (
             <>
               <DangerRow
-                title="Clear indexed data"
+                title="清除索引資料"
                 desc="Drop all vectors but keep the collection itself."
-                btn="Clear data"
+                btn="清除資料"
                 onClick={doClear}
               />
               <DangerRow
-                title="Delete collection"
+                title="刪除收藏集"
                 desc="Delete the index and ThreadShelf upload copies. Files in your original folder stay untouched."
                 btn="Delete"
                 onClick={doDelete}

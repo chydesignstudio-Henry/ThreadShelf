@@ -19,9 +19,9 @@ export function NotFound() {
       <div className="main-scroll">
         <div className="view">
           <div className="empty" id="notFound">
-            <h3>That page does not exist.</h3>
+            <h3>此頁面不存在。</h3>
             <p>
-              The address <code>{window.location.pathname}</code> is not part of ThreadShelf. The
+              位址 <code>{window.location.pathname}</code> is not part of ThreadShelf. The
               link may be from an older version, or a path may have been mistyped.
             </p>
             <div className="examples">
@@ -35,11 +35,11 @@ export function NotFound() {
                 }
               >
                 {Icons.search}
-                <span>Back to search</span>
+                <span>返回搜尋</span>
               </button>
               <button className="example-chip" onClick={() => void navigate({ to: '/indexing' })}>
                 {Icons.download}
-                <span>Index a folder</span>
+                <span>索引資料夾</span>
               </button>
             </div>
           </div>

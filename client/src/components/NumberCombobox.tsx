@@ -95,8 +95,8 @@ export function NumberCombobox({
         tabIndex={-1}
         // Deliberately not derived from `label`: an accessible name containing
         // the field's own name makes every getByLabel(field) query ambiguous.
-        aria-label="Show presets"
-        title="Show presets"
+        aria-label="顯示預設值"
+        title="顯示預設值"
         onClick={() => setOpen((current) => !current)}
       >
         ▾

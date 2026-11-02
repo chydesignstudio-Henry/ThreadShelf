@@ -670,7 +670,7 @@ export function ThreadContinuation({
                 )}
                 {message.reasoning && (
                   <details className="generated-reasoning">
-                    <summary>Model reasoning</summary>
+                    <summary>模型推理</summary>
                     <div>{message.reasoning}</div>
                   </details>
                 )}
@@ -767,7 +767,7 @@ export function ThreadContinuation({
                   disabled={sending}
                   onClick={() => setPrompt(attempt.prompt)}
                 >
-                  Retry prompt
+                  重試提示詞
                 </button>
                 <button
                   className="btn sm"
@@ -783,7 +783,7 @@ export function ThreadContinuation({
                 </button>
                 <button
                   className="btn sm ghost"
-                  aria-label="Dismiss failed generation"
+                  aria-label="關閉失敗的生成"
                   onClick={() =>
                     ephemeral
                       ? dismissPrivateAttempt(attempt.id)
@@ -792,22 +792,22 @@ export function ThreadContinuation({
                         )
                   }
                 >
-                  Dismiss
+                  關閉
                 </button>
               </div>
             </header>
             <div className="interrupted-prompt">
-              <span>Prompt</span>
+              <span>提示詞</span>
               <p>{attempt.prompt}</p>
             </div>
             {attempt.reasoning && (
               <details className="generated-reasoning" open>
-                <summary>Partial model reasoning</summary>
+                <summary>部分模型推理</summary>
                 <div>{attempt.reasoning}</div>
               </details>
             )}
             <div className="turn-body interrupted-answer">
-              {attempt.content || <em>No answer tokens were received.</em>}
+              {attempt.content || <em>沒有收到回答 token。</em>}
             </div>
             <footer>{attempt.error}</footer>
           </section>
@@ -850,7 +850,7 @@ export function ThreadContinuation({
               </div>
               {streamedReasoning.length > 0 && (
                 <details className="generated-reasoning">
-                  <summary>Model reasoning · streaming</summary>
+                  <summary>模型推理 · 串流中</summary>
                   <div>
                     {streamedReasoning.map((chunk, index) => (
                       <span className="stream-fragment" key={index}>
@@ -868,7 +868,7 @@ export function ThreadContinuation({
                     </span>
                   ))
                 ) : (
-                  <span className="stream-placeholder">Waiting for first token</span>
+                  <span className="stream-placeholder">等待第一個 token</span>
                 )}
                 <span className="stream-cursor" aria-hidden="true" />
               </div>
@@ -905,7 +905,7 @@ export function ThreadContinuation({
       <div className="continue-card">
         {vaultActivity.length > 0 && (
           <details className="vault-activity">
-            <summary>Vault tool activity</summary>
+            <summary>筆記庫工具活動</summary>
             <ul>
               {vaultActivity.map((activity, index) => (
                 <li key={index}>{activity}</li>
@@ -956,7 +956,7 @@ export function ThreadContinuation({
               data-state={modelDotState}
               aria-expanded={modelMenuOpen}
               aria-haspopup="dialog"
-              title="Model and generation settings"
+              title="模型與生成設定"
               onClick={() => setModelMenuOpen((open) => !open)}
             >
               <span className="runtime-dot" aria-hidden="true" />
@@ -971,12 +971,12 @@ export function ThreadContinuation({
               <div
                 className="model-popover"
                 role="dialog"
-                aria-label="Model and generation settings"
+                aria-label="模型與生成設定"
               >
                 <div
                   className="model-popover-providers"
                   role="tablist"
-                  aria-label="Generation provider"
+                  aria-label="生成供應者"
                 >
                   <button
                     type="button"
@@ -994,7 +994,7 @@ export function ThreadContinuation({
                     data-active={provider === 'openrouter'}
                     onClick={() => provider !== 'openrouter' && changeProvider('openrouter')}
                   >
-                    OpenRouter · external
+                    OpenRouter · 外部
                   </button>
                   <button
                     type="button"
@@ -1003,7 +1003,7 @@ export function ThreadContinuation({
                     data-active={provider === 'strata'}
                     onClick={() => provider !== 'strata' && changeProvider('strata')}
                   >
-                    Strata · local
+                    Strata · 本機
                   </button>
                 </div>
 
@@ -1019,8 +1019,8 @@ export function ThreadContinuation({
                     {provider === 'llama-cpp' && (
                       <button
                         className="btn sm icon-only"
-                        title="Browse and download GGUF models"
-                        aria-label="Browse and download GGUF models"
+                        title="瀏覽並下載 GGUF 模型"
+                        aria-label="瀏覽並下載 GGUF 模型"
                         disabled={sending}
                         onClick={() => {
                           setModelMenuOpen(false);
@@ -1032,8 +1032,8 @@ export function ThreadContinuation({
                     )}
                     <button
                       className="btn sm icon-only"
-                      title="Refresh model list"
-                      aria-label="Refresh model list"
+                      title="重新整理模型清單"
+                      aria-label="重新整理模型清單"
                       disabled={loadingModels}
                       onClick={() => void loadModels()}
                     >
@@ -1043,10 +1043,10 @@ export function ThreadContinuation({
                 </div>
 
                 {provider === 'openrouter' && (
-                  <div className="model-catalog-filters" aria-label="OpenRouter model filters">
-                    <span>Catalog</span>
+                  <div className="model-catalog-filters" aria-label="OpenRouter 模型篩選">
+                    <span>目錄</span>
                     <select
-                      aria-label="Sort OpenRouter models"
+                      aria-label="排序 OpenRouter 模型"
                       value={openRouterSort}
                       onChange={(event) => {
                         const next = event.target.value as OpenRouterModelSort;
@@ -1054,9 +1054,9 @@ export function ThreadContinuation({
                         void loadModels('openrouter', { sort: next, freeOnly });
                       }}
                     >
-                      <option value="most-popular">Most popular this week</option>
-                      <option value="newest">Latest</option>
-                      <option value="default">Default</option>
+                      <option value="most-popular">本週最熱門</option>
+                      <option value="newest">最新</option>
+                      <option value="default">預設</option>
                     </select>
                     <label>
                       <input
@@ -1068,7 +1068,7 @@ export function ThreadContinuation({
                           void loadModels('openrouter', { sort: openRouterSort, freeOnly: next });
                         }}
                       />
-                      Free only
+                      僅免費
                     </label>
                   </div>
                 )}
@@ -1097,7 +1097,7 @@ export function ThreadContinuation({
                       runtime.state === 'ready' ||
                       (runtime.state === 'external' && Boolean(runtime.model))) && (
                       <button className="btn sm" onClick={() => void ejectModel()}>
-                        Eject
+                        卸載
                       </button>
                     )}
                 </div>
@@ -1105,16 +1105,16 @@ export function ThreadContinuation({
                 <div className="generation-budget">
                   {provider === 'llama-cpp' ? (
                     <div className="generation-budget-field">
-                      <span>Context window</span>
+                      <span>上下文長度</span>
                       <NumberCombobox
                         id="chatContextSize"
-                        label="Context window in tokens"
+                        label="上下文長度（tokens）"
                         value={contextSize}
                         onChange={setContextSize}
                         options={CONTEXT_SIZE_OPTIONS}
                         optionLabel={(value) => `${value.toLocaleString()} tokens`}
                         invalid={!contextSizeValid}
-                        title="Pick a preset or type any whole number from 512 to 1,048,576 tokens"
+                        title="選擇預設值，或輸入 512 到 1,048,576 之間的整數 tokens"
                       />
                       <button
                         type="button"
@@ -1132,10 +1132,10 @@ export function ThreadContinuation({
                     </span>
                   )}
                   <div className="generation-budget-field">
-                    <span>Max answer</span>
+                    <span>回答上限</span>
                     <NumberCombobox
                       id="maxAnswerTokens"
-                      label="Maximum response tokens"
+                      label="回應 token 上限"
                       value={maxTokens}
                       onChange={setMaxTokens}
                       options={maxTokenOptions}
@@ -1153,7 +1153,7 @@ export function ThreadContinuation({
                       checked={zdrOnly}
                       onChange={(event) => setZdrOnly(event.target.checked)}
                     />
-                    ZDR-only routing <span>may exclude most endpoints</span>
+                    僅 ZDR 路由 <span>may exclude most endpoints</span>
                   </label>
                 )}
 
@@ -1176,7 +1176,7 @@ export function ThreadContinuation({
             </span>
             {sending ? (
               <button className="btn danger" onClick={() => requestController.current?.abort()}>
-                Stop
+                停止
               </button>
             ) : (
               <button

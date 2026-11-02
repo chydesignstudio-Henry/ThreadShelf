@@ -240,8 +240,8 @@ export function ChatPage() {
       privateSession.draft
     ) {
       const confirmed = await confirmDialog({
-        title: 'Delete this private chat?',
-        message: 'This unsaved session and its recovery attempts will be removed from this tab.',
+        title: '要刪除這個私密聊天嗎？',
+        message: '此未儲存的工作階段及其復原紀錄會從此分頁移除。',
         confirmLabel: 'Delete chat',
         danger: true,
       });
@@ -256,7 +256,7 @@ export function ChatPage() {
   const deleteChat = async (thread: ThreadShelfChatSummary) => {
     const confirmed = await confirmDialog({
       title: `Delete “${thread.title}”?`,
-      message: 'The conversation and its search index entries will be permanently removed.',
+      message: '此對話及其搜尋索引會被永久刪除。',
       confirmLabel: 'Delete chat',
       danger: true,
     });
@@ -320,7 +320,7 @@ export function ChatPage() {
             {!activeId && !loading && (
               <div className="chat-empty">
                 <span className="chat-empty-icon">{Icons.plus}</span>
-                <h1>Start a new conversation</h1>
+                <h1>開始新對話</h1>
                 <p>
                   Chats created here are separate from your imported archive. They stay local and
                   become searchable after each complete response.
@@ -338,7 +338,7 @@ export function ChatPage() {
                       <input
                         id="chatTitleInput"
                         className="chat-title-input"
-                        aria-label="Chat title"
+                        aria-label="聊天標題"
                         autoFocus
                         value={titleDraft}
                         onChange={(event) => setTitleDraft(event.target.value)}
@@ -365,9 +365,9 @@ export function ChatPage() {
                     ) : (
                       <span
                         className="chat-storage-badge saved"
-                        title="Stored locally and indexed for search"
+                        title="存在本機並已索引供搜尋"
                       >
-                        Saved locally
+                        已存在本機
                       </span>
                     )}
                   </div>
@@ -395,7 +395,7 @@ export function ChatPage() {
                             className="btn sm ghost"
                             onClick={startRename}
                           >
-                            Rename
+                            重新命名
                           </button>
                           <button className="btn sm ghost" onClick={() => void deleteChat(chat)}>
                             {Icons.trash} Delete

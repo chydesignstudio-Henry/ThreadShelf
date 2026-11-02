@@ -16,15 +16,15 @@ interface NavItem {
 }
 
 const LIBRARY_ITEMS: readonly NavItem[] = [
-  { id: '/search', viewKey: 'search', label: 'Search archive', icon: Icons.search },
-  { id: '/insights', viewKey: 'insights', label: 'Insights', icon: Icons.chart },
+  { id: '/search', viewKey: 'search', label: '搜尋封存', icon: Icons.search },
+  { id: '/insights', viewKey: 'insights', label: '洞察', icon: Icons.chart },
   { id: '/notes', viewKey: 'notes', label: 'Markdown/Obsidian', icon: Icons.folder },
 ];
 
 const MANAGE_ITEMS: readonly NavItem[] = [
-  { id: '/indexing', viewKey: 'indexing', label: 'Add data', icon: Icons.download },
+  { id: '/indexing', viewKey: 'indexing', label: '新增資料', icon: Icons.download },
   { id: '/mcp', viewKey: 'mcp', label: 'MCP', icon: Icons.plug },
-  { id: '/settings', viewKey: 'settings', label: 'Settings', icon: Icons.settings },
+  { id: '/settings', viewKey: 'settings', label: '設定', icon: Icons.settings },
 ];
 
 interface SidebarProps {
@@ -88,7 +88,7 @@ export function Sidebar({
   const collectionCountLabel = (s: CollectionStats | undefined): string => {
     const conversations = s?.conversations ?? 0;
     if (conversations > 0) {
-      return `${conversations.toLocaleString()} thread${conversations === 1 ? '' : 's'}`;
+      return `${conversations.toLocaleString()} 則對話`;
     }
     return `${(s?.files ?? 0).toLocaleString()} files`;
   };
@@ -97,9 +97,9 @@ export function Sidebar({
     const conversations = s?.conversations ?? 0;
     const left =
       conversations > 0
-        ? `${conversations.toLocaleString()} conversation${conversations === 1 ? '' : 's'}`
+        ? `${conversations.toLocaleString()} 則對話`
         : `${(s?.files ?? 0).toLocaleString()} files`;
-    return `${left} · ${(s?.chunks ?? 0).toLocaleString()} indexed chunks`;
+    return `${left} · ${(s?.chunks ?? 0).toLocaleString()} 個已索引區塊`;
   };
 
   return (
@@ -113,24 +113,24 @@ export function Sidebar({
         <button
           className="icon-btn sb-close"
           onClick={onClose}
-          aria-label="Hide sidebar"
-          title="Hide sidebar"
+          aria-label="隱藏側邊欄"
+          title="隱藏側邊欄"
         >
           {Icons.close}
         </button>
       </div>
 
-      <section className="sb-chat-panel" aria-label="Conversations">
+      <section className="sb-chat-panel" aria-label="對話">
         <div className="sb-chat-create">
           <button id="sidebarNewChatButton" className="sb-new-chat" onClick={onNewChat}>
             {Icons.plus}
-            <span>New chat</span>
+            <span>新聊天</span>
           </button>
           <button
             id="sidebarPrivateChatButton"
             className="sb-private-chat"
-            aria-label="Start private conversation"
-            title="Start a private chat that is cleared with this tab"
+            aria-label="開始私密對話"
+            title="開始私密聊天（關閉分頁即清除）"
             onClick={onNewPrivateChat}
           >
             {Icons.ghost}
@@ -149,7 +149,7 @@ export function Sidebar({
             }}
           >
             <span className="ico">{Icons.chat}</span>
-            <span className="label">Your chats</span>
+            <span className="label">你的聊天</span>
             {chats.length > 0 && <em>{chats.length}</em>}
             <span className="sb-chat-chevron" aria-hidden="true">
               ▾
@@ -157,9 +157,9 @@ export function Sidebar({
           </button>
           {chatsOpen && (
             <div className="sb-chat-history-list">
-              {chatsLoading && <span className="sb-chat-history-empty">Loading chats…</span>}
+              {chatsLoading && <span className="sb-chat-history-empty">正在載入聊天…</span>}
               {!chatsLoading && chats.length === 0 && (
-                <span className="sb-chat-history-empty">No saved chats yet.</span>
+                <span className="sb-chat-history-empty">尚無已儲存的聊天。</span>
               )}
               {chats.map((thread) => (
                 <button
@@ -184,12 +184,12 @@ export function Sidebar({
 
       <button className="sb-cmdk" onClick={onCmdK}>
         {Icons.search}
-        <span>Quick jump…</span>
+        <span>快速跳轉…</span>
         <kbd>Ctrl+K</kbd>
       </button>
 
       <div className="sb-section">
-        <span>Library</span>
+        <span>資料庫</span>
       </div>
 
       <nav className="sb-list" style={{ flex: '0 0 auto' }}>
@@ -208,8 +208,8 @@ export function Sidebar({
       </nav>
 
       <div className="sb-section">
-        <span>Archive collections</span>
-        <button title="New collection" onClick={onNewColl}>
+        <span>封存收藏集</span>
+        <button title="新收藏集" onClick={onNewColl}>
           {Icons.plus}
         </button>
       </div>
@@ -223,9 +223,9 @@ export function Sidebar({
         >
           <span className="sb-coll-dot" style={{ background: 'var(--accent)' }} />
           <span className="sb-coll-meta">
-            <b>All collections</b>
+            <b>所有收藏集</b>
             <span>
-              {totalFiles} files · {totalChunks.toLocaleString()} chunks
+              {totalFiles} 個檔案 · {totalChunks.toLocaleString()} 個區塊
             </span>
           </span>
         </button>
@@ -244,7 +244,7 @@ export function Sidebar({
                 <span className="sb-coll-meta">
                   <b>{collLabel(c)}</b>
                   <span title={collectionCountTitle(s)}>
-                    {collectionCountLabel(s)} · {(s?.chunks ?? 0).toLocaleString()} chunks
+                    {collectionCountLabel(s)} · {(s?.chunks ?? 0).toLocaleString()} 區塊
                   </span>
                 </span>
               </button>
@@ -272,13 +272,13 @@ export function Sidebar({
             className="sb-coll-empty-toggle"
             onClick={() => setShowEmpty((value) => !value)}
           >
-            {showEmpty ? 'Hide empty collections' : `Show ${emptyCollections.length} empty`}
+            {showEmpty ? '隱藏空的收藏集' : `顯示 ${emptyCollections.length} 個空收藏集`}
           </button>
         )}
       </div>
 
       <div className="sb-section sb-manage-section">
-        <span>Manage</span>
+        <span>管理</span>
       </div>
       <nav className="sb-list sb-manage-list">
         {MANAGE_ITEMS.map((n) => (
@@ -300,7 +300,7 @@ export function Sidebar({
         <div className="sb-footer-row">
           <span
             className="sb-status"
-            title="Local backend · paraphrase-multilingual embeddings · LanceDB storage. Model runtime and eject live in the chat model menu."
+            title="本機後端 · paraphrase-multilingual embedding · LanceDB 儲存。模型執行與卸載在聊天的模型選單中。"
           >
             local · :{window.location.port || '80'}
           </span>

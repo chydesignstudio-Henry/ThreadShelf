@@ -69,13 +69,13 @@ const REASONING_HELP: Record<LlamaReasoningEffort, string> = {
 
 // Like Ollama's keep_alive: how long an unused model stays in memory.
 const IDLE_UNLOAD_PRESETS: readonly { readonly minutes: number; readonly label: string }[] = [
-  { minutes: 0, label: 'Never (until another model or Eject)' },
-  { minutes: 5, label: 'After 5 minutes idle' },
-  { minutes: 15, label: 'After 15 minutes idle' },
-  { minutes: 30, label: 'After 30 minutes idle' },
-  { minutes: 60, label: 'After 1 hour idle' },
-  { minutes: 240, label: 'After 4 hours idle' },
-  { minutes: 1440, label: 'After 1 day idle' },
+  { minutes: 0, label: '永不（直到換模型或卸載）' },
+  { minutes: 5, label: '閒置 5 分鐘後' },
+  { minutes: 15, label: '閒置 15 分鐘後' },
+  { minutes: 30, label: '閒置 30 分鐘後' },
+  { minutes: 60, label: '閒置 1 小時後' },
+  { minutes: 240, label: '閒置 4 小時後' },
+  { minutes: 1440, label: '閒置 1 天後' },
 ];
 
 const ACCELERATION_HELP: Record<LlamaAccelerationMode, string> = {
@@ -262,12 +262,12 @@ export function GenerationSettings() {
     return (
       <section className="generation-settings" aria-labelledby="generation-settings-title">
         <div className="section-h">
-          <h2 id="generation-settings-title">Conversation generation</h2>
+          <h2 id="generation-settings-title">對話生成</h2>
         </div>
         {error ? (
           <div className="banner err">{error}</div>
         ) : (
-          <p role="status">Loading generation settings…</p>
+          <p role="status">正在載入生成設定…</p>
         )}
       </section>
     );
@@ -276,7 +276,7 @@ export function GenerationSettings() {
   return (
     <section className="generation-settings" aria-labelledby="generation-settings-title">
       <div className="section-h">
-        <h2 id="generation-settings-title">Conversation generation</h2>
+        <h2 id="generation-settings-title">對話生成</h2>
       </div>
 
       <div className="banner warn">
@@ -299,7 +299,7 @@ export function GenerationSettings() {
             className="btn sm ghost panel-head-action"
             onClick={() => setGuide('settings')}
           >
-            What do these settings mean?
+            這些設定是什麼意思？
           </button>
         </div>
         <div className="panel-body generation-form">
@@ -308,11 +308,11 @@ export function GenerationSettings() {
             <input
               value={executablePath}
               onChange={(event) => setExecutablePath(event.target.value)}
-              placeholder="Auto-detect from PATH or .threadshelf/tools"
+              placeholder="從 PATH 或 .threadshelf/tools 自動偵測"
             />
           </label>
           <label>
-            <span>Existing local server URL (optional)</span>
+            <span>既有本機伺服器 URL（選填）</span>
             <input
               value={baseUrl}
               onChange={(event) => setBaseUrl(event.target.value)}
@@ -320,7 +320,7 @@ export function GenerationSettings() {
             />
           </label>
           <label>
-            <span>Model directories — one absolute path per line</span>
+            <span>模型資料夾：每行一個絕對路徑</span>
             <textarea
               value={directories}
               onChange={(event) => setDirectories(event.target.value)}
@@ -339,30 +339,30 @@ export function GenerationSettings() {
           </label>
           <div className="llama-runtime-config">
             <label>
-              <span>Acceleration profile</span>
+              <span>加速設定檔</span>
               <select
                 value={acceleration}
                 onChange={(event) => setAcceleration(event.target.value as LlamaAccelerationMode)}
               >
-                <option value="auto">Auto-fit (recommended)</option>
-                <option value="cpu">CPU only</option>
-                <option value="gpu">Single GPU · maximum offload</option>
-                <option value="hybrid">CPU + GPU · selected layers</option>
+                <option value="auto">自動調整（建議）</option>
+                <option value="cpu">僅 CPU</option>
+                <option value="gpu">單 GPU · 最大卸載</option>
+                <option value="hybrid">CPU + GPU · 指定層</option>
                 <option value="multi-gpu">Multi-GPU</option>
               </select>
               <small>{ACCELERATION_HELP[acceleration]}</small>
             </label>
             <label>
-              <span>Context window</span>
+              <span>上下文長度</span>
               <NumberCombobox
                 id="llamaContextSize"
-                label="Context window in tokens"
+                label="上下文長度（tokens）"
                 value={contextSize}
                 onChange={setContextSize}
                 options={CONTEXT_SIZE_PRESETS}
                 optionLabel={(value) => CONTEXT_SIZE_LABELS[value] ?? value.toLocaleString()}
                 invalid={!contextSizeValid}
-                title="Pick a preset or type any whole number from 512 to 1,048,576 tokens"
+                title="選擇預設值，或輸入 512 到 1,048,576 之間的整數 tokens"
               />
               <small>
                 {contextSizeValid
@@ -376,7 +376,7 @@ export function GenerationSettings() {
             </label>
             {acceleration === 'hybrid' && (
               <label>
-                <span>GPU layers</span>
+                <span>GPU 層數</span>
                 <input
                   type="number"
                   min={1}
@@ -388,7 +388,7 @@ export function GenerationSettings() {
             )}
             {(acceleration === 'gpu' || (acceleration === 'multi-gpu' && splitMode === 'row')) && (
               <label>
-                <span>Main GPU index</span>
+                <span>主 GPU 編號</span>
                 <input
                   type="number"
                   min={0}
@@ -401,27 +401,27 @@ export function GenerationSettings() {
             {acceleration === 'multi-gpu' && (
               <>
                 <label>
-                  <span>Multi-GPU split</span>
+                  <span>多 GPU 分配</span>
                   <select
                     value={splitMode}
                     onChange={(event) => setSplitMode(event.target.value as LlamaSplitMode)}
                   >
-                    <option value="layer">Layer · balanced default</option>
-                    <option value="row">Row · parallel weights</option>
+                    <option value="layer">依層 · 平衡預設</option>
+                    <option value="row">依列 · 平行權重</option>
                   </select>
                 </label>
                 <label>
-                  <span>GPU proportions (optional)</span>
+                  <span>GPU 分配比例（選填）</span>
                   <input
                     value={tensorSplit}
                     onChange={(event) => setTensorSplit(event.target.value)}
-                    placeholder="1,1 or 3,1"
+                    placeholder="1,1 或 3,1"
                   />
                 </label>
               </>
             )}
             <label>
-              <span>CPU threads</span>
+              <span>CPU 執行緒</span>
               <input
                 type="number"
                 min={-1}
@@ -437,9 +437,9 @@ export function GenerationSettings() {
                 value={flashAttention}
                 onChange={(event) => setFlashAttention(event.target.value as LlamaFlashAttention)}
               >
-                <option value="auto">Auto (recommended)</option>
+                <option value="auto">自動（建議）</option>
                 <option value="on">On</option>
-                <option value="off">Off</option>
+                <option value="off">關閉</option>
               </select>
             </label>
             <label>
@@ -448,41 +448,41 @@ export function GenerationSettings() {
                 value={kvCache}
                 onChange={(event) => setKvCache(event.target.value as LlamaKvCacheProfile)}
               >
-                <option value="quality">Quality · Q8 (recommended)</option>
-                <option value="memory">Memory saver · Q4</option>
-                <option value="default">Default · F16</option>
+                <option value="quality">品質 · Q8（建議）</option>
+                <option value="memory">省記憶體 · Q4</option>
+                <option value="default">預設 · F16</option>
               </select>
               <small>{KV_CACHE_HELP[kvCache]}</small>
             </label>
             <label>
-              <span>Speculative decoding (MTP)</span>
+              <span>推測解碼（MTP）</span>
               <select
                 value={speculative}
                 onChange={(event) => setSpeculative(event.target.value as LlamaSpeculativeMode)}
               >
-                <option value="auto">Auto · draft 2 (recommended)</option>
-                <option value="aggressive">Aggressive · draft 3</option>
-                <option value="off">Off</option>
+                <option value="auto">自動 · draft 2（建議）</option>
+                <option value="aggressive">積極 · draft 3</option>
+                <option value="off">關閉</option>
               </select>
               <small>{SPECULATIVE_HELP[speculative]}</small>
             </label>
             <label>
-              <span>Reasoning effort</span>
+              <span>推理強度</span>
               <select
                 value={reasoningEffort}
                 onChange={(event) => setReasoningEffort(event.target.value as LlamaReasoningEffort)}
               >
-                <option value="medium">Medium (recommended)</option>
-                <option value="low">Low</option>
-                <option value="high">High</option>
-                <option value="xhigh">XHigh · slow</option>
-                <option value="off">Off</option>
-                <option value="default">Template default</option>
+                <option value="medium">中（建議）</option>
+                <option value="low">低</option>
+                <option value="high">高</option>
+                <option value="xhigh">極高 · 慢</option>
+                <option value="off">關閉</option>
+                <option value="default">範本預設</option>
               </select>
               <small>{REASONING_HELP[reasoningEffort]}</small>
             </label>
             <label>
-              <span>Unload model from memory</span>
+              <span>從記憶體卸載模型</span>
               <select
                 value={idleUnloadMinutes}
                 onChange={(event) => setIdleUnloadMinutes(Number(event.target.value))}
@@ -505,7 +505,7 @@ export function GenerationSettings() {
             </label>
           </div>
           <div className="setup-note">
-            Safe discovery: <code>npm run setup:llama</code>. Check latest release:{' '}
+            安全探索： <code>npm run setup:llama</code>. Check latest release:{' '}
             <code>npm run setup:llama -- -- --check</code>. Nothing downloads until explicit{' '}
             <code>--install</code> or <code>--url</code> approval.
             <br />
@@ -515,10 +515,10 @@ export function GenerationSettings() {
           </div>
           <div className="generation-actions">
             <button className="btn primary" onClick={() => setCatalogOpen(true)}>
-              Download a model…
+              下載模型…
             </button>
             <button className="btn" onClick={() => void scanModels()}>
-              Scan GGUF models
+              掃描 GGUF 模型
             </button>
             {models && <span>{models.length.toLocaleString()} model files found</span>}
           </div>
@@ -540,7 +540,7 @@ export function GenerationSettings() {
         </div>
         <div className="panel-body generation-form">
           <label>
-            <span>Session API key (or set OPENROUTER_API_KEY in the server .env)</span>
+            <span>本次工作階段的 API 金鑰（或在伺服器 .env 設定 OPENROUTER_API_KEY）</span>
             <input
               type="password"
               autoComplete="off"
@@ -561,7 +561,7 @@ export function GenerationSettings() {
               checked={enforceZdr}
               onChange={(event) => setEnforceZdr(event.target.checked)}
             />
-            Use ZDR-only routing by default (can exclude many endpoints)
+            預設只使用 ZDR 路由（可能排除許多端點）
           </label>
           <label className="check-field">
             <input
@@ -569,14 +569,14 @@ export function GenerationSettings() {
               checked={denyDataCollection}
               onChange={(event) => setDenyDataCollection(event.target.checked)}
             />
-            Use only providers that deny data collection/training
+            只使用不收集資料、不拿資料訓練的供應者
           </label>
         </div>
       </div>
 
       <div className="panel generation-panel">
         <div className="panel-head">
-          <h3>Diagnostics</h3>
+          <h3>診斷</h3>
           <span className="sub">local error log</span>
         </div>
         <div className="panel-body generation-form">
@@ -586,7 +586,7 @@ export function GenerationSettings() {
               checked={persistErrorLogs}
               onChange={(event) => setPersistErrorLogs(event.target.checked)}
             />
-            Save generation errors to .threadshelf/generation-errors.log
+            將生成錯誤存到 .threadshelf/generation-errors.log
           </label>
           <p className="sub">
             ThreadShelf writes provider/model errors without adding prompts, answers, or reasoning.

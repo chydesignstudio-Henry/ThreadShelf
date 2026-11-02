@@ -123,7 +123,7 @@ export function ThreadReader({
       })
       .catch((e: unknown) => {
         if (e instanceof DOMException && e.name === 'AbortError') return;
-        setError(e instanceof Error ? e.message : 'Unknown error');
+        setError(e instanceof Error ? e.message : '未知錯誤');
       });
 
     return () => {
@@ -182,7 +182,7 @@ export function ThreadReader({
       .filter(Boolean)
       .join('\n\n');
     void copyText(text).then((ok) =>
-      ok ? toast.success('Conversation copied.') : toast.error('Clipboard unavailable.'),
+      ok ? toast.success('已複製對話。') : toast.error('無法使用剪貼簿。'),
     );
   }, [turns]);
 
@@ -229,7 +229,7 @@ export function ThreadReader({
     if (!threadShelfChatId) return;
     const confirmed = await confirmDialog({
       title: `Delete “${title}”?`,
-      message: 'The conversation and its search index entries will be permanently removed.',
+      message: '此對話及其搜尋索引會被永久刪除。',
       confirmLabel: 'Delete chat',
       danger: true,
     });
@@ -256,7 +256,7 @@ export function ThreadReader({
       collection: collLabel(collection),
     });
     downloadFile(`${slugify(title)}.md`, md);
-    toast.success('Exported as Markdown.');
+    toast.success('已匯出為 Markdown。');
   };
 
   const exportJson = () => {
@@ -278,7 +278,7 @@ export function ThreadReader({
       JSON.stringify(payload, null, 2),
       'application/json;charset=utf-8',
     );
-    toast.success('Exported as JSON.');
+    toast.success('已匯出為 JSON。');
   };
 
   return (
@@ -291,7 +291,7 @@ export function ThreadReader({
         <SidebarToggle onMenu={onMenu} />
         <button id="threadClose" className="thread-back" onClick={onBack} title="Esc">
           {Icons.arrowLeft}
-          <span>Back</span>
+          <span>返回</span>
         </button>
         <span className="title-preview" title={title}>
           {turns ? title : 'Loading…'}
@@ -325,14 +325,14 @@ export function ThreadReader({
               {detectedModel && (
                 <>
                   <span className="item">
-                    <span className="k">model</span>
+                    <span className="k">模型</span>
                     <span className="v">{detectedModel}</span>
                   </span>
                   <span className="sep">·</span>
                 </>
               )}
               <span className="item">
-                <span className="k">turns</span>
+                <span className="k">輪</span>
                 <span className="v">{turns.length}</span>
               </span>
               <span className="sep">·</span>
@@ -342,19 +342,19 @@ export function ThreadReader({
               </span>
               <span className="sep">·</span>
               <span className="item">
-                <span className="k">chars</span>
+                <span className="k">字元</span>
                 <span className="v">{formatCount(conversationStats.chars)}</span>
               </span>
               <span className="sep">·</span>
               <span className="item">
-                <span className="k">file</span>
+                <span className="k">檔案</span>
                 <span className="v">{shortPath(sourceFile)}</span>
               </span>
               {matchIdx != null && (
                 <>
                   <span className="sep">·</span>
                   <span className="item">
-                    <span className="k">match</span>
+                    <span className="k">符合</span>
                     <span className="v match">turn #{matchIdx}</span>
                   </span>
                 </>
@@ -394,9 +394,9 @@ export function ThreadReader({
             <span style={{ flex: 1 }} />
             <div className="role-toggles" role="group">
               {[
-                { id: 'user' as const, label: 'User' },
-                { id: 'thinking' as const, label: 'Reasoning' },
-                { id: 'ai' as const, label: 'Response' },
+                { id: 'user' as const, label: '使用者' },
+                { id: 'thinking' as const, label: '推理' },
+                { id: 'ai' as const, label: '回應' },
               ].map((r) => (
                 <label key={r.id} className="role-toggle" data-role={r.id} data-on={visible[r.id]}>
                   <input
@@ -413,7 +413,7 @@ export function ThreadReader({
                   className="role-toggle"
                   data-role="threadshelf"
                   data-on={showThreadShelfTurns}
-                  title="Turns generated locally in ThreadShelf as continuations of this imported thread"
+                  title="在 ThreadShelf 本機生成、接續此匯入對話的輪次"
                 >
                   <input
                     type="checkbox"
@@ -421,7 +421,7 @@ export function ThreadReader({
                     onChange={(event) => setShowThreadShelfTurns(event.target.checked)}
                   />
                   <span className="rt-dot" />
-                  <span>Continuations</span>
+                  <span>接續對話</span>
                 </label>
               )}
             </div>
@@ -449,7 +449,7 @@ export function ThreadReader({
                       onClick={() => toggleExpand(i)}
                     >
                       <span className="rs-r">R</span>
-                      <span className="rs-label">reasoning</span>
+                      <span className="rs-label">推理</span>
                       <span className="rs-idx">#{i}</span>
                       <span className="rs-chevron">{isOpen ? '−' : '+'}</span>
                     </button>
@@ -491,20 +491,20 @@ export function ThreadReader({
                         </time>
                       )}
                       {isMatch ? (
-                        <span className="match-pill">● match</span>
+                        <span className="match-pill">● 符合</span>
                       ) : (
                         <CopyBtn text={text} />
                       )}
                       {onSimilar && (
                         <button
                           className="copy-turn"
-                          title="Search for similar passages"
+                          title="搜尋相似段落"
                           onClick={(e) => {
                             e.stopPropagation();
                             onSimilar(text);
                           }}
                         >
-                          similar
+                          相似
                         </button>
                       )}
                     </div>
@@ -520,7 +520,7 @@ export function ThreadReader({
                     </div>
                     {isLong && (
                       <button className="show-more" onClick={() => toggleExpand(i)}>
-                        {isLongOpen ? 'Show less' : 'Show more'}
+                        {isLongOpen ? 'Show less' : '展開'}
                       </button>
                     )}
                   </div>
@@ -537,7 +537,7 @@ export function ThreadReader({
 
             <div className="thread-end" aria-hidden="true">
               <span className="dot" />
-              <span>End of conversation</span>
+              <span>對話結束</span>
               <span className="dot" />
             </div>
           </div>

@@ -17,10 +17,10 @@ interface ModelCatalogModalProps {
 }
 
 const SORTS: readonly { readonly value: CatalogSort; readonly label: string }[] = [
-  { value: 'downloads', label: 'Most downloaded' },
-  { value: 'trending', label: 'Trending' },
-  { value: 'likes', label: 'Most liked' },
-  { value: 'recent', label: 'Recently updated' },
+  { value: 'downloads', label: '下載最多' },
+  { value: 'trending', label: '趨勢' },
+  { value: 'likes', label: '最多喜歡' },
+  { value: 'recent', label: '最近更新' },
 ];
 
 const FIT_LABEL: Record<CatalogFit, string> = {
@@ -163,17 +163,17 @@ export function ModelCatalogModal({ open, onClose, onDownloaded }: ModelCatalogM
         className="modal-card catalog-modal"
         onClick={(event) => event.stopPropagation()}
         role="dialog"
-        aria-label="Download a model"
+        aria-label="下載模型"
       >
         <div className="modal-head catalog-head">
           <div>
-            <h3>Download a model</h3>
+            <h3>下載模型</h3>
             <p>
               GGUF models from the Hugging Face Hub, matched against your hardware. Only search
               terms leave this machine — no chat content is ever sent.
             </p>
           </div>
-          <span className="catalog-origin" title="Catalog metadata is fetched from huggingface.co">
+          <span className="catalog-origin" title="目錄資訊取自 huggingface.co">
             catalog · huggingface.co
           </span>
         </div>
@@ -183,13 +183,13 @@ export function ModelCatalogModal({ open, onClose, onDownloaded }: ModelCatalogM
             autoFocus
             value={query}
             onChange={(event) => setQuery(event.target.value)}
-            placeholder="Search models — e.g. qwen, coder, heretic, uncensored…"
-            aria-label="Search models"
+            placeholder="搜尋模型，例如 qwen、coder…"
+            aria-label="搜尋模型"
           />
           <select
             value={sort}
             onChange={(event) => setSort(event.target.value as CatalogSort)}
-            aria-label="Sort models"
+            aria-label="排序模型"
           >
             {SORTS.map((option) => (
               <option key={option.value} value={option.value}>
@@ -200,19 +200,19 @@ export function ModelCatalogModal({ open, onClose, onDownloaded }: ModelCatalogM
         </div>
 
         <div className="catalog-hardware">
-          <b>Your machine:</b> {hardwareSummary(hardware)}
+          <b>你的電腦：</b> {hardwareSummary(hardware)}
           {!tokenConfigured && (
             <span className="catalog-token-hint">
-              No HF_TOKEN set — gated models are marked and cannot be downloaded.
+              未設定 HF_TOKEN：受限模型會被標示且無法下載。
             </span>
           )}
         </div>
 
         <div className="catalog-body">
           {error && <p className="catalog-error">{error}</p>}
-          {loading && models.length === 0 && <p className="catalog-empty">Loading catalog…</p>}
+          {loading && models.length === 0 && <p className="catalog-empty">正在載入目錄…</p>}
           {!loading && !error && models.length === 0 && (
-            <p className="catalog-empty">No GGUF models matched that search.</p>
+            <p className="catalog-empty">沒有符合搜尋的 GGUF 模型。</p>
           )}
 
           {models.map((model) => {
@@ -237,14 +237,14 @@ export function ModelCatalogModal({ open, onClose, onDownloaded }: ModelCatalogM
                       ♥ {fmtCount(model.likes)}
                     </span>
                     {model.trustedPublisher && (
-                      <span className="catalog-badge trusted" title="Known-good GGUF publisher">
+                      <span className="catalog-badge trusted" title="可信的 GGUF 發布者">
                         trusted
                       </span>
                     )}
                     {model.gated !== false && (
                       <span
                         className="catalog-badge gated"
-                        title="This repository is gated on Hugging Face. Accept its licence there and set HF_TOKEN in the server .env."
+                        title="此儲存庫在 Hugging Face 受限。請先在那裡接受授權，並在伺服器 .env 設定 HF_TOKEN。"
                       >
                         needs HF login
                       </span>
@@ -254,7 +254,7 @@ export function ModelCatalogModal({ open, onClose, onDownloaded }: ModelCatalogM
 
                 {isOpen && (
                   <div className="catalog-quants">
-                    {detailLoading && <p className="catalog-empty">Reading files…</p>}
+                    {detailLoading && <p className="catalog-empty">正在讀取檔案…</p>}
                     {detail && detail.gated !== false && (
                       <p className="catalog-gated-note">
                         {detail.id} is gated. Accept the licence on Hugging Face, then set{' '}
@@ -280,7 +280,7 @@ export function ModelCatalogModal({ open, onClose, onDownloaded }: ModelCatalogM
                         <div className="catalog-quant" key={quant.label} data-fit={quant.fit}>
                           <span className="catalog-quant-name">
                             {quant.label}
-                            {quant.recommended && <em title="Balanced default">recommended</em>}
+                            {quant.recommended && <em title="平衡預設">recommended</em>}
                             {quant.shards > 1 && <i>{quant.shards} shards</i>}
                           </span>
                           <span className="catalog-quant-size">{fmtBytes(quant.totalBytes)}</span>
@@ -310,11 +310,11 @@ export function ModelCatalogModal({ open, onClose, onDownloaded }: ModelCatalogM
         <div className="modal-foot">
           {downloading ? (
             <button className="btn ghost" onClick={() => abortRef.current?.abort()}>
-              Cancel download
+              取消下載
             </button>
           ) : (
             <button className="btn ghost" onClick={close}>
-              Close
+              關閉
             </button>
           )}
         </div>

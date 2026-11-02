@@ -11,7 +11,7 @@ interface DirectoryPickerProps {
 export function DirectoryPicker({
   initialPath,
   onSelect,
-  label = 'Browse system folders…',
+  label = '瀏覽系統資料夾…',
 }: DirectoryPickerProps) {
   const [open, setOpen] = useState(false);
   const [data, setData] = useState<DirectoryBrowserResponse | null>(null);
@@ -28,7 +28,7 @@ export function DirectoryPicker({
       setPath(response.path);
       setOpen(true);
     } catch (cause) {
-      setError(cause instanceof Error ? cause.message : 'Could not browse system folders.');
+      setError(cause instanceof Error ? cause.message : '無法瀏覽系統資料夾。');
     } finally {
       setLoading(false);
     }
@@ -59,10 +59,10 @@ export function DirectoryPicker({
           disabled={!data?.parent || loading}
           onClick={() => void browse(data?.parent)}
         >
-          Up
+          上一層
         </button>
         <input
-          aria-label="System folder path"
+          aria-label="系統資料夾路徑"
           value={path}
           onChange={(event) => setPath(event.target.value)}
           onKeyDown={(event) => {
@@ -75,10 +75,10 @@ export function DirectoryPicker({
           disabled={loading}
           onClick={() => void browse(path)}
         >
-          Go
+          前往
         </button>
         <button className="btn sm" type="button" onClick={() => setOpen(false)}>
-          Close
+          關閉
         </button>
       </div>
       <div className="directory-picker-roots">
@@ -89,7 +89,7 @@ export function DirectoryPicker({
         ))}
       </div>
       {error && <div className="field-error">{error}</div>}
-      <div className="directory-picker-list" role="listbox" aria-label="System folders">
+      <div className="directory-picker-list" role="listbox" aria-label="系統資料夾">
         {data?.directories.map((directory) => (
           <button
             type="button"
@@ -102,9 +102,9 @@ export function DirectoryPicker({
             {directory.name}
           </button>
         ))}
-        {data?.directories.length === 0 && <span>No subdirectories</span>}
+        {data?.directories.length === 0 && <span>沒有子資料夾</span>}
       </div>
-      {data?.truncated && <span className="sub">Showing the first 500 directories.</span>}
+      {data?.truncated && <span className="sub">僅顯示前 500 個資料夾。</span>}
       <div className="directory-picker-foot">
         <span title={data?.path}>{data?.path}</span>
         <button
@@ -115,7 +115,7 @@ export function DirectoryPicker({
             setOpen(false);
           }}
         >
-          Add this folder
+          加入此資料夾
         </button>
       </div>
     </div>

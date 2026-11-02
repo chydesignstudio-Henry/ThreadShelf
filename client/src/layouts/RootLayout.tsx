@@ -44,7 +44,7 @@ export function RootLayout() {
       queryClient.invalidateQueries({ queryKey: ['search'] }),
       queryClient.invalidateQueries({ queryKey: ['thread'] }),
     ]);
-    toast.success('Local index data refreshed.');
+    toast.success('本機索引資料已更新。');
   }, [queryClient]);
 
   useEffect(() => {
@@ -57,7 +57,7 @@ export function RootLayout() {
       const ok = await confirmDialog({
         title: `Delete collection "${collLabel(name)}"?`,
         message:
-          'The index and copies previously uploaded through ThreadShelf are deleted. Files in the original folder you selected remain untouched.',
+          '會刪除索引與先前透過 ThreadShelf 上傳的副本。你原本選擇的資料夾中的檔案不受影響。',
         confirmLabel: 'Delete',
         danger: true,
       });
@@ -70,7 +70,7 @@ export function RootLayout() {
         }
         toast.success(`Deleted collection "${collLabel(name)}".`);
       } catch (e) {
-        toast.error(e instanceof Error ? e.message : 'Unknown error');
+        toast.error(e instanceof Error ? e.message : '未知錯誤');
       }
     },
     [activeColl, setActiveColl, deleteMutation, router],
@@ -203,7 +203,7 @@ export function RootLayout() {
       <button
         className="sidebar-scrim"
         onClick={closeSidebar}
-        aria-label="Close sidebar"
+        aria-label="關閉側邊欄"
         tabIndex={sidebarOpen ? 0 : -1}
       />
 

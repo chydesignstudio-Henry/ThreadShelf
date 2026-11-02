@@ -16,8 +16,8 @@ export function SidebarToggle({ onMenu }: { readonly onMenu: () => void }) {
     <button
       className="icon-btn mobile-menu-btn"
       onClick={() => (isDrawerViewport() ? onMenu() : setHidden(false))}
-      aria-label="Open sidebar"
-      title="Open sidebar"
+      aria-label="開啟側邊欄"
+      title="開啟側邊欄"
     >
       {Icons.menu}
     </button>

@@ -3,9 +3,9 @@ import type { ThreadTurn } from './types';
 const SKIP = /(?:users|projects|user|message_feedback|shared_conversations|sora)\.json$/i;
 
 export const collLabel = (c: string): string => {
-  if (c === 'all' || c === '__all__') return 'All collections';
+  if (c === 'all' || c === '__all__') return '所有收藏集';
   if (c === 'chunks') return 'Chunks';
-  if (c === 'threadshelf_conversations') return 'ThreadShelf conversations';
+  if (c === 'threadshelf_conversations') return 'ThreadShelf 對話';
   return c;
 };
 
@@ -91,7 +91,7 @@ export const fmtRelative = (value: string | undefined, now: number = Date.now())
   const ms = date.getTime();
   if (Number.isNaN(ms)) return '';
   const diff = now - ms;
-  if (diff < 45_000) return 'just now';
+  if (diff < 45_000) return '剛剛';
   const minutes = Math.round(diff / 60_000);
   if (minutes < 60) return `${minutes} min ago`;
   const hours = Math.round(diff / 3_600_000);
@@ -133,7 +133,7 @@ export const isPotentialExport = (path: string): boolean => {
 };
 
 /**
- * Build a "more like this" seed query from a chunk/turn text: collapsed
+ * Build a "更多類似內容" seed query from a chunk/turn text: collapsed
  * whitespace, truncated at a word boundary so the query stays URL- and
  * server-friendly while keeping enough signal for the embedding model.
  */

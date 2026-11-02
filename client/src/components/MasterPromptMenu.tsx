@@ -129,12 +129,12 @@ export function MasterPromptMenu() {
       </button>
 
       {open && (
-        <div className="master-prompt-popover" role="dialog" aria-label="Master prompt">
+        <div className="master-prompt-popover" role="dialog" aria-label="主提示詞">
           <div className="master-prompt-tabs">
             <button
               type="button"
               data-active={!activeId}
-              title="Send no master prompt"
+              title="不傳送主提示詞"
               disabled={saving}
               onClick={() =>
                 activate.mutate('', {
@@ -142,7 +142,7 @@ export function MasterPromptMenu() {
                 })
               }
             >
-              Off
+              關閉
             </button>
             {prompts.map((prompt) => (
               <button
@@ -164,8 +164,8 @@ export function MasterPromptMenu() {
             <button
               type="button"
               className="master-prompt-new"
-              title="New master prompt"
-              aria-label="New master prompt"
+              title="新增主提示詞"
+              aria-label="新增主提示詞"
               onClick={() => edit('')}
             >
               +
@@ -174,16 +174,16 @@ export function MasterPromptMenu() {
 
           <input
             className="master-prompt-name"
-            aria-label="Master prompt name"
-            placeholder="Name (optional)"
+            aria-label="主提示詞名稱"
+            placeholder="名稱（選填）"
             value={name}
             maxLength={60}
             onChange={(event) => setName(event.target.value)}
           />
           <textarea
             id="masterPromptText"
-            aria-label="Master prompt text"
-            placeholder="Sent as a system message with every request…"
+            aria-label="主提示詞內容"
+            placeholder="每次請求都會作為 system message 傳送…"
             rows={5}
             maxLength={20000}
             value={text}
@@ -203,7 +203,7 @@ export function MasterPromptMenu() {
                   })
                 }
               >
-                Delete
+                刪除
               </button>
             )}
             <button type="button" className="btn sm primary" disabled={saving} onClick={save}>

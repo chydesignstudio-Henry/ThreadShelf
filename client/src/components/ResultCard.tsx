@@ -99,7 +99,7 @@ export function ResultCard({ result, query, onClick, selected, onMoreLikeThis }:
         {metadata.turnIndex != null && (
           <>
             <span>
-              turn <b className="mono">#{metadata.turnIndex}</b>
+              輪 <b className="mono">#{metadata.turnIndex}</b>
             </span>
             <span className="dot" />
           </>
@@ -110,7 +110,7 @@ export function ResultCard({ result, query, onClick, selected, onMoreLikeThis }:
             className="more-like-this"
             role="button"
             tabIndex={0}
-            title="Search for similar passages"
+            title="搜尋相似段落"
             onClick={(e) => {
               e.stopPropagation();
               onMoreLikeThis();
@@ -123,10 +123,10 @@ export function ResultCard({ result, query, onClick, selected, onMoreLikeThis }:
               }
             }}
           >
-            more like this
+            更多類似內容
           </span>
         )}
-        <span className="open-thread">open thread {Icons.arrowRight}</span>
+        <span className="open-thread">開啟對話 {Icons.arrowRight}</span>
       </div>
     </button>
   );

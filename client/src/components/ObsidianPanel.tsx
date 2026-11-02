@@ -78,7 +78,7 @@ export function ObsidianChatControls({
       {data?.vaultPath ? (
         <VaultWriteToggle config={data} />
       ) : (
-        <a href="/notes">Connect your notes</a>
+        <a href="/notes">連接你的筆記</a>
       )}
       {enabled && (
         <span className="vault-hint">
@@ -117,12 +117,12 @@ export function VaultDeleteApproval({
     }
   };
   return (
-    <section className="vault-approval" role="group" aria-label="Confirm vault deletion">
+    <section className="vault-approval" role="group" aria-label="確認刪除筆記">
       <header>
         <strong title={approval.model}>{approval.model} wants to delete the following files</strong>
         <button
           className="btn sm ghost"
-          aria-label="Cancel vault deletion"
+          aria-label="取消刪除筆記"
           disabled={busy}
           onClick={() => void decide(false)}
         >
@@ -136,7 +136,7 @@ export function VaultDeleteApproval({
           </li>
         ))}
       </ul>
-      <p>Files will move to the vault’s .trash folder. Approval expires after five minutes.</p>
+      <p>檔案會移到筆記庫的 .trash 資料夾。核准 5 分鐘後失效。</p>
       <label className="vault-check">
         <input
           id="vaultDeleteAcknowledged"
@@ -150,7 +150,7 @@ export function VaultDeleteApproval({
       {error && <p className="field-error">{error}</p>}
       <footer>
         <button className="btn" disabled={busy} onClick={() => void decide(false)}>
-          Cancel
+          取消
         </button>
         <button
           id="vaultDeleteConfirm"
@@ -158,7 +158,7 @@ export function VaultDeleteApproval({
           disabled={!checked || busy}
           onClick={() => void decide(true)}
         >
-          OK — delete files
+          確定，刪除檔案
         </button>
       </footer>
     </section>
@@ -210,8 +210,8 @@ export function ObsidianPanel() {
   return (
     <section className="panel vault-panel" id="obsidianPanel">
       <div className="panel-head">
-        <h3>Markdown notes</h3>
-        <span className="sub">Obsidian · Logseq · OpenClaw · any folder of .md files</span>
+        <h3>Markdown 筆記</h3>
+        <span className="sub">Obsidian · Logseq · OpenClaw · 任何 .md 資料夾</span>
       </div>
       <div className="panel-body">
         <p>
@@ -221,7 +221,7 @@ export function ObsidianPanel() {
         </p>
         {suggestions.length > 0 && (
           <div className="vault-detected">
-            <span className="vault-detected-title">Found on this computer</span>
+            <span className="vault-detected-title">在此電腦上找到</span>
             <ul>
               {suggestions.map((folder) => (
                 <li key={folder.path}>
@@ -236,28 +236,28 @@ export function ObsidianPanel() {
                     disabled={busy || !config}
                     onClick={() => connect(folder.path)}
                   >
-                    Connect
+                    連接
                   </button>
                 </li>
               ))}
             </ul>
           </div>
         )}
-        <label htmlFor="obsidianVaultPath">Notes folder</label>
+        <label htmlFor="obsidianVaultPath">筆記資料夾</label>
         <input
           id="obsidianVaultPath"
           value={path}
           onChange={(event) => setDraftPath(event.target.value)}
-          placeholder="Absolute path to your notes folder"
+          placeholder="筆記資料夾的絕對路徑"
         />
-        <DirectoryPicker initialPath={path} onSelect={setDraftPath} label="Browse folders…" />
+        <DirectoryPicker initialPath={path} onSelect={setDraftPath} label="瀏覽資料夾…" />
         <div className="vault-actions">
           <button className="btn" disabled={busy || !config} onClick={() => connect(path)}>
-            Save vault
+            儲存筆記庫
           </button>
           {config?.vaultPath && (
             <button className="btn ghost" disabled={busy} onClick={() => setDraftPath('')}>
-              Disconnect (then Save)
+              中斷連接（然後儲存）
             </button>
           )}
         </div>
@@ -282,14 +282,14 @@ export function ObsidianPanel() {
             >
               <input
                 id="obsidianSearchInput"
-                aria-label="Search Obsidian notes"
+                aria-label="搜尋 Obsidian 筆記"
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
-                placeholder="Words in note text or paths"
+                placeholder="筆記內容或路徑中的字詞"
                 maxLength={1000}
               />
               <button className="btn" disabled={busy || !query.trim()}>
-                Search vault
+                搜尋筆記庫
               </button>
             </form>
             {results && (
@@ -327,15 +327,15 @@ export function ObsidianPanel() {
                     className="btn sm"
                     href={`obsidian://open?path=${encodeURIComponent(`${config.vaultPath.replace(/\\/g, '/')}/${note.path}`)}`}
                   >
-                    Open in Obsidian
+                    在 Obsidian 開啟
                   </a>
                 </header>
                 <Markdown text={note.content} />
               </article>
             )}
             <details>
-              <summary>Create a Markdown note</summary>
-              <label htmlFor="obsidianNewPath">Relative note path (.md)</label>
+              <summary>建立 Markdown 筆記</summary>
+              <label htmlFor="obsidianNewPath">筆記相對路徑（.md）</label>
               <input
                 id="obsidianNewPath"
                 value={newPath}
@@ -361,7 +361,7 @@ export function ObsidianPanel() {
                   })
                 }
               >
-                Create note
+                建立筆記
               </button>
             </details>
           </>

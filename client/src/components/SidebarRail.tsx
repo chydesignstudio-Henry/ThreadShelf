@@ -12,13 +12,13 @@ interface NavItem {
 }
 
 const NAV_ITEMS: readonly NavItem[] = [
-  { id: '/search', viewKey: 'search', label: 'Search archive', icon: Icons.search },
-  { id: '/chat', viewKey: 'chat', label: 'New chat', icon: Icons.spark },
-  { id: '/insights', viewKey: 'insights', label: 'Insights', icon: Icons.chart },
+  { id: '/search', viewKey: 'search', label: '搜尋封存', icon: Icons.search },
+  { id: '/chat', viewKey: 'chat', label: '新聊天', icon: Icons.spark },
+  { id: '/insights', viewKey: 'insights', label: '洞察', icon: Icons.chart },
   { id: '/notes', viewKey: 'notes', label: 'Markdown/Obsidian', icon: Icons.folder },
-  { id: '/indexing', viewKey: 'indexing', label: 'Add data', icon: Icons.download },
+  { id: '/indexing', viewKey: 'indexing', label: '新增資料', icon: Icons.download },
   { id: '/mcp', viewKey: 'mcp', label: 'MCP', icon: Icons.plug },
-  { id: '/settings', viewKey: 'settings', label: 'Settings', icon: Icons.settings },
+  { id: '/settings', viewKey: 'settings', label: '設定', icon: Icons.settings },
 ];
 
 interface SidebarRailProps {
@@ -59,7 +59,7 @@ export function SidebarRail({
         ))}
       </nav>
 
-      <div className="rail-sep-h">Collections</div>
+      <div className="rail-sep-h">收藏集</div>
 
       <div className="rail-colls">
         <button
@@ -68,7 +68,7 @@ export function SidebarRail({
           onClick={() => setActiveColl('all')}
         >
           <i style={{ background: 'var(--accent)' }} />
-          <span>All collections</span>
+          <span>所有收藏集</span>
         </button>
 
         {collections

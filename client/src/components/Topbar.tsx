@@ -3,10 +3,10 @@ import { collLabel } from '../utils';
 import { SidebarToggle } from './SidebarToggle';
 
 const VIEW_LABELS: Record<string, string> = {
-  search: 'Archive',
+  search: '封存',
   insights: 'Insights',
   notes: 'Markdown/Obsidian',
-  indexing: 'Add data',
+  indexing: '新增資料',
   mcp: 'MCP',
   settings: 'Settings',
   chat: 'Chat',

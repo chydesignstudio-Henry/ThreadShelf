@@ -63,7 +63,7 @@ function ActivityChart({ activity }: { readonly activity: readonly ActivityBucke
   }, [activity]);
 
   if (activity.length === 0) {
-    return <p className="chart-empty">No dated turns yet — timestamps appear as you index.</p>;
+    return <p className="chart-empty">尚無帶日期的對話輪次；索引後會出現時間。</p>;
   }
 
   // Label january of each year; if the range is short, label every ~6th month.
@@ -83,7 +83,7 @@ function ActivityChart({ activity }: { readonly activity: readonly ActivityBucke
           );
         })}
       </div>
-      <div className="chart-cols" role="img" aria-label="Indexed passages per month">
+      <div className="chart-cols" role="img" aria-label="每月索引段落">
         {activity.map((bucket, i) => {
           const pct = max > 0 ? (bucket.count / max) * 100 : 0;
           const isPeak = i === peakIdx && bucket.count > 0;
@@ -181,7 +181,7 @@ export function InsightsPage() {
         <div className="view insights-view">
           <div className="insights-head">
             <div>
-              <h2>Archive insights</h2>
+              <h2>封存洞察</h2>
               {data?.firstActivity && data?.lastActivity && (
                 <p className="insights-range">
                   {fmtDate(data.firstActivity).split(',')[0]} —{' '}
@@ -194,7 +194,7 @@ export function InsightsPage() {
               <select
                 value={scope}
                 onChange={(e) => setScope(e.target.value)}
-                aria-label="Insights scope"
+                aria-label="洞察範圍"
               >
                 {collections.map((c) => (
                   <option key={c} value={c}>
@@ -207,8 +207,8 @@ export function InsightsPage() {
 
           {isError && (
             <div className="empty">
-              <h3>Could not load insights.</h3>
-              <p>Is the backend running?</p>
+              <h3>無法載入洞察。</h3>
+              <p>後端有在執行嗎？</p>
             </div>
           )}
 
@@ -216,35 +216,35 @@ export function InsightsPage() {
 
           {isEmpty && (
             <div className="empty">
-              <h3>Nothing indexed yet.</h3>
-              <p>Index a folder of chat exports and your archive stats will appear here.</p>
+              <h3>尚未索引任何內容。</h3>
+              <p>索引聊天匯出資料夾後，封存統計會顯示在這裡。</p>
             </div>
           )}
 
           {data && !isEmpty && (
             <>
               <div className="stat-tiles">
-                <StatTile label="Conversations" value={data.totals.conversations} />
-                <StatTile label="Turns" value={data.totals.turns} />
-                <StatTile label="Files" value={data.totals.files} />
-                <StatTile label="Indexed passages" value={data.totals.chunks} />
+                <StatTile label="對話" value={data.totals.conversations} />
+                <StatTile label="對話輪次" value={data.totals.turns} />
+                <StatTile label="檔案" value={data.totals.files} />
+                <StatTile label="已索引段落" value={data.totals.chunks} />
                 {scope === 'all' && (
-                  <StatTile label="Collections" value={data.totals.collections} />
+                  <StatTile label="收藏集" value={data.totals.collections} />
                 )}
               </div>
 
               <section className="insight-card">
-                <h3>Activity over time</h3>
-                <p className="insight-sub">Indexed passages per month, by turn date</p>
+                <h3>時間軸活動</h3>
+                <p className="insight-sub">每月索引段落（依對話日期）</p>
                 <ActivityChart activity={data.activity} />
               </section>
 
               <div className="insight-grid">
                 <section className="insight-card">
-                  <h3>Top models</h3>
-                  <p className="insight-sub">By indexed passages</p>
+                  <h3>熱門模型</h3>
+                  <p className="insight-sub">依索引段落數</p>
                   {data.topModels.length === 0 ? (
-                    <p className="chart-empty">No model metadata in this scope.</p>
+                    <p className="chart-empty">此範圍沒有模型資訊。</p>
                   ) : (
                     <BarList
                       items={data.topModels.map((m) => ({
@@ -258,10 +258,10 @@ export function InsightsPage() {
                 </section>
 
                 <section className="insight-card">
-                  <h3>Providers</h3>
-                  <p className="insight-sub">Turns per provider</p>
+                  <h3>供應者</h3>
+                  <p className="insight-sub">各來源對話輪次</p>
                   {data.providers.length === 0 ? (
-                    <p className="chart-empty">No conversations stored yet.</p>
+                    <p className="chart-empty">尚未儲存任何對話。</p>
                   ) : (
                     <BarList
                       items={data.providers.map((p) => {
@@ -284,7 +284,7 @@ export function InsightsPage() {
               </div>
 
               <section className="insight-card">
-                <h3>Longest conversations</h3>
+                <h3>最長的對話</h3>
                 <p className="insight-sub">Top {data.longestThreads.length} by turn count</p>
                 <div className="longest-list">
                   {data.longestThreads.map((thread, i) => {

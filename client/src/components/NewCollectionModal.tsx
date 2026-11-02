@@ -21,7 +21,7 @@ export function NewCollectionModal({ open, onClose, onCreated }: NewCollectionMo
       onCreated(d.collection ?? name);
       toast.success(`Created collection "${d.collection ?? name}".`);
     } catch (e) {
-      toast.error(e instanceof Error ? e.message : 'Unknown error');
+      toast.error(e instanceof Error ? e.message : '未知錯誤');
     }
   }, [name, onClose, onCreated, mutation]);
 
@@ -31,13 +31,13 @@ export function NewCollectionModal({ open, onClose, onCreated }: NewCollectionMo
     <div className="scrim" onClick={onClose}>
       <div className="modal-card" onClick={(e) => e.stopPropagation()}>
         <div className="modal-head">
-          <h3>New collection</h3>
+          <h3>新收藏集</h3>
           <p>
-            Collections are local LanceDB tables. Use lowercase, alphanumeric, hyphens, underscores.
+            收藏集是本機 LanceDB 資料表。請使用小寫英數字、連字號、底線。
           </p>
         </div>
         <div className="modal-body">
-          <label>Name</label>
+          <label>名稱</label>
           <input
             autoFocus
             value={name}
@@ -48,10 +48,10 @@ export function NewCollectionModal({ open, onClose, onCreated }: NewCollectionMo
         </div>
         <div className="modal-foot">
           <button className="btn ghost" onClick={onClose}>
-            Cancel
+            取消
           </button>
           <button className="btn primary" onClick={() => void doCreate()} disabled={!name}>
-            Create
+            建立
           </button>
         </div>
       </div>

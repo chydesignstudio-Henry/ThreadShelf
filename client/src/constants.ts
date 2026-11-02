@@ -24,12 +24,12 @@ export const getProvider = (key: string | undefined): Provider => {
 };
 
 export const EXAMPLE_QUERIES = [
-  'paper chromatography household experiment',
-  'fact-checking workflow with citations',
-  'sauna rules and temperature',
-  'openrouter export json schema',
-  'ablation study sample size',
-  'polish translation tone register',
+  'BIM 衝突檢核流程',
+  'AI 輔助設計提案',
+  'LOD 深化紀錄',
+  'NotebookLM 來源整理',
+  '室內材料色彩計畫',
+  'Gemini 匯出備份',
 ] as const;
 
 export const STORAGE_KEYS = {

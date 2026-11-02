@@ -45,9 +45,9 @@ interface RoleChipDef {
 }
 
 const ROLE_CHIPS: readonly RoleChipDef[] = [
-  { id: 'user', label: 'User', key: 'user' },
-  { id: 'reasoning', label: 'Reasoning', key: 'thinking' },
-  { id: 'response', label: 'Response', key: 'ai' },
+  { id: 'user', label: '使用者', key: 'user' },
+  { id: 'reasoning', label: '推理', key: 'thinking' },
+  { id: 'response', label: '回應', key: 'ai' },
 ];
 
 function SearchLoading() {
@@ -402,7 +402,7 @@ export function SearchPage() {
   const results = useMemo(() => searchData?.results ?? [], [searchData?.results]);
   const canLoadMore = hasQuery && !isSearching && results.length >= resultLimit && resultLimit < 50;
   const conversationLabel =
-    activeColl === 'all' ? 'Conversations' : `${collLabel(activeColl)} conversations`;
+    activeColl === 'all' ? '對話' : `${collLabel(activeColl)} 對話`;
 
   // Keyboard navigation over the visible list (search results or conversations).
   const navCount = hasQuery ? results.length : visibleConversations.length;
@@ -468,9 +468,9 @@ export function SearchPage() {
             <div className="banner err">
               <span className="ico">{Icons.warn}</span>
               <div className="grow">
-                <b style={{ fontWeight: 500 }}>Backend unreachable.</b>{' '}
+                <b style={{ fontWeight: 500 }}>無法連線到後端。</b>{' '}
                 <span style={{ color: 'var(--text-2)' }}>
-                  Run <code>npm start</code> in the project root.
+                  執行 <code>npm start</code> in the project root.
                 </span>
               </div>
             </div>
@@ -495,7 +495,7 @@ export function SearchPage() {
               placeholder={
                 searchMode === 'keyword'
                   ? 'Exact match: identifiers, error strings, code…'
-                  : 'Search by meaning across your archive…'
+                  : '依語意搜尋整個封存…'
               }
             />
             {inputValue && (
@@ -503,8 +503,8 @@ export function SearchPage() {
                 id="clearSearch"
                 type="button"
                 className="search-clear"
-                aria-label="Clear search"
-                title="Clear search (Esc)"
+                aria-label="清除搜尋"
+                title="清除搜尋（Esc）"
                 onClick={clearSearch}
               >
                 {Icons.close}
@@ -513,24 +513,24 @@ export function SearchPage() {
           </div>
 
           <div className="search-toolbar">
-            <div className="mode-toggle" role="group" aria-label="Search mode">
+            <div className="mode-toggle" role="group" aria-label="搜尋模式">
               <button
                 type="button"
                 className="mode-btn"
                 data-on={searchMode === 'semantic'}
-                title="Rank by meaning (local embeddings)"
+                title="依語意排序（本機 embedding）"
                 onClick={() => switchMode('semantic')}
               >
-                Semantic
+                語意
               </button>
               <button
                 type="button"
                 className="mode-btn"
                 data-on={searchMode === 'keyword'}
-                title="Exact substring match (case-insensitive)"
+                title="精確子字串比對（不分大小寫）"
                 onClick={() => switchMode('keyword')}
               >
-                Exact
+                精確
               </button>
             </div>
             <div className="role-chips">
@@ -548,19 +548,19 @@ export function SearchPage() {
               ))}
             </div>
             <label className="origin-filter">
-              <span>origin</span>
+              <span>來源</span>
               <select
-                aria-label="Filter by conversation origin"
+                aria-label="依對話來源篩選"
                 value={originFilter}
                 onChange={(event) => setOriginFilter(event.target.value as OriginFilter)}
               >
-                <option value="all">All</option>
+                <option value="all">全部</option>
                 <option value="threadshelf">ThreadShelf</option>
-                <option value="archive">Clean archive</option>
+                <option value="archive">清理封存</option>
               </select>
             </label>
             <label className="model-filter">
-              <span>model</span>
+              <span>模型</span>
               <input
                 value={modelFilter}
                 onChange={(e) => setModelFilter(e.target.value)}
@@ -569,7 +569,7 @@ export function SearchPage() {
               />
             </label>
             <label className="date-filter">
-              <span>from</span>
+              <span>起</span>
               <input
                 type="date"
                 value={dateFrom}
@@ -578,7 +578,7 @@ export function SearchPage() {
               />
             </label>
             <label className="date-filter">
-              <span>to</span>
+              <span>迄</span>
               <input
                 type="date"
                 value={dateTo}
@@ -588,8 +588,8 @@ export function SearchPage() {
             </label>
             <span className="toolbar-spacer" />
             <span className="toolbar-hint">
-              <kbd>/</kbd> focus · <kbd>↑↓</kbd> navigate · <kbd>↵</kbd> open · <kbd>Ctrl+K</kbd>{' '}
-              commands
+              <kbd>/</kbd> 聚焦 · <kbd>↑↓</kbd> 移動 · <kbd>↵</kbd> 開啟 · <kbd>Ctrl+K</kbd>{' '}
+              指令
             </span>
           </div>
 
@@ -626,7 +626,7 @@ export function SearchPage() {
                         {s.collection !== 'all' && (
                           <span className="ss-tag">{collLabel(s.collection)}</span>
                         )}
-                        {s.mode === 'keyword' && <span className="ss-tag">exact</span>}
+                        {s.mode === 'keyword' && <span className="ss-tag">精確</span>}
                       </button>
                       <button
                         type="button"
@@ -645,7 +645,7 @@ export function SearchPage() {
                 <>
                   <div className="results-meta-bar">
                     <span className="h">
-                      Pinned <b>{pinnedForScope.length}</b>
+                      已釘選 <b>{pinnedForScope.length}</b>
                     </span>
                   </div>
                   <div className="result-list">
@@ -660,7 +660,7 @@ export function SearchPage() {
                         >
                           <div className="result-head">
                             <span className="r-role" data-role="user">
-                              pinned
+                              已釘選
                             </span>
                             <span className="r-provider">
                               <span
@@ -674,7 +674,7 @@ export function SearchPage() {
                               role="button"
                               tabIndex={0}
                               data-on="true"
-                              title="Unpin"
+                              title="取消釘選"
                               onClick={(e) => {
                                 e.stopPropagation();
                                 togglePinned(p);
@@ -700,7 +700,7 @@ export function SearchPage() {
                               <span className="slash">/</span>
                               <span className="r-source-file">{fileName}</span>
                             </span>
-                            <span className="open-thread">open thread {Icons.arrowRight}</span>
+                            <span className="open-thread">開啟對話 {Icons.arrowRight}</span>
                           </div>
                         </button>
                       );
@@ -714,23 +714,23 @@ export function SearchPage() {
                   {conversationLabel} <b>{conversations.length}</b>
                 </span>
                 <label className="conv-sort">
-                  <span>sort</span>
+                  <span>排序</span>
                   <select
                     value={convSort}
                     onChange={(e) => setConvSort(e.target.value as ConversationSort)}
-                    aria-label="Sort conversations"
+                    aria-label="排序對話"
                   >
-                    <option value="recent">Recent</option>
-                    <option value="longest">Longest</option>
-                    <option value="title">Title</option>
+                    <option value="recent">最近</option>
+                    <option value="longest">最長</option>
+                    <option value="title">標題</option>
                   </select>
                 </label>
                 <input
                   className="conv-filter"
                   value={convFilter}
                   onChange={(e) => setConvFilter(e.target.value)}
-                  placeholder="Filter by title or file…"
-                  aria-label="Filter conversations"
+                  placeholder="依標題或檔案篩選…"
+                  aria-label="篩選對話"
                 />
               </div>
 
@@ -755,13 +755,13 @@ export function SearchPage() {
                       >
                         <div className="result-head">
                           <span className="r-role" data-role="ai">
-                            thread
+                            對話
                           </span>
                           {item.hasThreadShelfTurns && (
                             <span className="threadshelf-turn-badge">
                               {item.createdInThreadShelf
                                 ? 'Created in ThreadShelf'
-                                : 'Continued in ThreadShelf'}
+                                : '在 ThreadShelf 接續'}
                             </span>
                           )}
                           <span className="r-provider">
@@ -776,7 +776,7 @@ export function SearchPage() {
                             role="button"
                             tabIndex={0}
                             data-on={isPinned}
-                            title={isPinned ? 'Unpin' : 'Pin conversation'}
+                            title={isPinned ? 'Unpin' : '釘選對話'}
                             onClick={(e) => {
                               e.stopPropagation();
                               togglePinned(pin);
@@ -805,7 +805,7 @@ export function SearchPage() {
                           {item.turnCount != null && (
                             <>
                               <span className="dot" />
-                              <span>{item.turnCount} turns</span>
+                              <span>{item.turnCount} 輪</span>
                             </>
                           )}
                           {lastActive && (
@@ -814,7 +814,7 @@ export function SearchPage() {
                               <span>{lastActive}</span>
                             </>
                           )}
-                          <span className="open-thread">open thread {Icons.arrowRight}</span>
+                          <span className="open-thread">開啟對話 {Icons.arrowRight}</span>
                         </div>
                       </button>
                     );
@@ -826,20 +826,20 @@ export function SearchPage() {
                         className="load-more-button"
                         onClick={() => setConvLimit((value) => value + CONV_PAGE_SIZE)}
                       >
-                        Show more ({conversations.length - convLimit} left)
+                        顯示更多（剩 {conversations.length - convLimit} 則）
                       </button>
                     </div>
                   )}
                 </div>
               ) : convFilter.trim() ? (
                 <div className="empty">
-                  <h3>No conversations match the filter.</h3>
-                  <p>Try a different phrase or clear the filter box.</p>
+                  <h3>沒有符合篩選的對話。</h3>
+                  <p>試試其他字詞，或清除篩選框。</p>
                 </div>
               ) : activeColl !== 'all' ? (
                 <div className="empty">
-                  <h3>No conversations indexed.</h3>
-                  <p>Index a folder into this collection or switch to another collection.</p>
+                  <h3>尚未索引任何對話。</h3>
+                  <p>把資料夾索引到這個收藏集，或切換到其他收藏集。</p>
                 </div>
               ) : null}
             </>
@@ -849,8 +849,8 @@ export function SearchPage() {
 
           {hasQuery && !isSearching && results.length === 0 && (
             <div className="empty">
-              <h3>No results found.</h3>
-              <p>Try another query, broaden your role filters, or index more files.</p>
+              <h3>找不到結果。</h3>
+              <p>試試其他查詢、放寬角色篩選，或索引更多檔案。</p>
             </div>
           )}
 
@@ -858,7 +858,7 @@ export function SearchPage() {
             <>
               <div className="results-meta-bar">
                 <span className="h">
-                  Results <b>{results.length}</b>
+                  結果 <b>{results.length}</b>
                   <span style={{ marginLeft: 14, color: 'var(--text-3)' }}>
                     in {collLabel(activeColl)}
                   </span>
@@ -867,11 +867,11 @@ export function SearchPage() {
                   type="button"
                   className="save-search"
                   data-on={!!existingSaved}
-                  title={existingSaved ? 'Remove from saved searches' : 'Save this search'}
+                  title={existingSaved ? 'Remove from saved searches' : '儲存此搜尋'}
                   onClick={toggleSaveSearch}
                 >
                   {existingSaved ? Icons.starFilled : Icons.star}
-                  <span>{existingSaved ? 'Saved' : 'Save search'}</span>
+                  <span>{existingSaved ? 'Saved' : '儲存搜尋'}</span>
                 </button>
               </div>
               <div className="result-list" ref={listRef}>
@@ -893,7 +893,7 @@ export function SearchPage() {
                     className="load-more-button"
                     onClick={() => setResultLimit((value) => Math.min(value + 15, 50))}
                   >
-                    Load more
+                    載入更多
                   </button>
                 </div>
               )}

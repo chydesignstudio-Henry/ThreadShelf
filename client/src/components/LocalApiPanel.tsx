@@ -127,14 +127,14 @@ export function LocalApiPanel({
   return (
     <div className="panel generation-panel">
       <div className="panel-head">
-        <h3>Local model API</h3>
-        <span className="sub">OpenAI · Anthropic compatible</span>
+        <h3>本機模型 API</h3>
+        <span className="sub">相容 OpenAI · Anthropic</span>
         <button
           type="button"
           className="btn sm panel-head-action"
           onClick={() => onGuide('status')}
         >
-          Guide: status &amp; connect an app
+          指南：狀態與連接 App
         </button>
       </div>
       <LocalApiGuide
@@ -157,7 +157,7 @@ export function LocalApiPanel({
             checked={draft.enabled}
             onChange={(event) => onChange({ enabled: event.target.checked })}
           />
-          Serve the local model API at /v1
+          在 /v1 提供本機模型 API
         </label>
 
         <div className="local-api-row">
@@ -171,7 +171,7 @@ export function LocalApiPanel({
         {network?.state === 'listening' &&
           network.urls.map((url) => (
             <div className="local-api-row" key={url}>
-              <span className="local-api-label">Network URL</span>
+              <span className="local-api-label">網路 URL</span>
               <code className="local-api-value">{url}</code>
               <button type="button" className="btn sm ghost" onClick={() => copy(url, url)}>
                 {copied === url ? 'copied' : 'copy'}
@@ -181,7 +181,7 @@ export function LocalApiPanel({
 
         <div className="local-api-row">
           <label className="local-api-label" htmlFor="local-api-model">
-            Model id
+            模型 ID
           </label>
           {models && models.length > 0 ? (
             <select
@@ -218,7 +218,7 @@ export function LocalApiPanel({
 
         <div className="generation-form local-api-access">
           <label>
-            <span>API key (optional)</span>
+            <span>API 金鑰（選填）</span>
             <div className="local-api-key">
               <input
                 type="text"
@@ -241,7 +241,7 @@ export function LocalApiPanel({
                   className="btn sm"
                   onClick={() => onChange({ apiKey: generateKey(), clearApiKey: false })}
                 >
-                  Generate
+                  生成
                 </button>
               )}
               {draft.apiKey && (
@@ -267,7 +267,7 @@ export function LocalApiPanel({
                 checked={draft.clearApiKey}
                 onChange={(event) => onChange({ clearApiKey: event.target.checked })}
               />
-              Remove the saved key
+              移除已儲存的金鑰
             </label>
           )}
 
@@ -277,11 +277,11 @@ export function LocalApiPanel({
               checked={draft.networkAccess}
               onChange={(event) => onChange({ networkAccess: event.target.checked })}
             />
-            Serve on the local network
+            在區域網路提供服務
           </label>
           {draft.networkAccess && (
             <label>
-              <span>Network port</span>
+              <span>網路埠</span>
               <input
                 type="number"
                 min={1}
@@ -300,14 +300,14 @@ export function LocalApiPanel({
           {network?.state === 'error' && <div className="banner err">{network.error}</div>}
         </div>
 
-        <div className="local-api-endpoints" aria-label="Endpoints">
+        <div className="local-api-endpoints" aria-label="端點">
           {ENDPOINTS.map((endpoint) => (
             <code key={endpoint}>{endpoint}</code>
           ))}
         </div>
 
         <div className="local-api-example">
-          <div className="local-api-tabs" role="tablist" aria-label="Example client">
+          <div className="local-api-tabs" role="tablist" aria-label="範例 client">
             {EXAMPLES.map((option) => (
               <button
                 key={option.id}

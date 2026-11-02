@@ -21,7 +21,7 @@ export function Toaster() {
           className="toast"
           data-type={t.type}
           onClick={() => dismissToast(t.id)}
-          title="Dismiss"
+          title="關閉"
         >
           <span className="toast-ico">{ICON_FOR[t.type]}</span>
           <span className="toast-text">{t.text}</span>

@@ -84,7 +84,7 @@ export function ModelCombobox({
       <div className="model-combobox-input">
         <input
           role="combobox"
-          aria-label="Generation model"
+          aria-label="生成模型"
           aria-expanded={open}
           aria-controls="generation-model-options"
           aria-autocomplete="list"
@@ -92,7 +92,7 @@ export function ModelCombobox({
           disabled={disabled}
           value={open ? query : (selected?.name ?? '')}
           title={selected?.path || selected?.id}
-          placeholder={disabled ? 'No models available' : 'Type to find a model…'}
+          placeholder={disabled ? 'No models available' : '輸入以尋找模型…'}
           onFocus={() => {
             setOpen(true);
             setQuery('');
@@ -136,10 +136,10 @@ export function ModelCombobox({
         >
           <div className="model-combobox-summary">
             <span>{visible.length === 100 ? '100+' : visible.length} matches</span>
-            <span>favorites first</span>
+            <span>最愛優先</span>
           </div>
           {visible.length === 0 ? (
-            <div className="model-combobox-empty">No matching models</div>
+            <div className="model-combobox-empty">沒有符合的模型</div>
           ) : (
             visible.map((model, index) => {
               const favorite = favoriteKeys.has(favoriteModelKey(model));
@@ -159,7 +159,7 @@ export function ModelCombobox({
                     className="model-favorite"
                     data-favorite={favorite}
                     aria-label={`${favorite ? 'Remove' : 'Add'} ${model.name} ${favorite ? 'from' : 'to'} favorites`}
-                    title={favorite ? 'Remove from favorites' : 'Add to favorites'}
+                    title={favorite ? 'Remove from favorites' : '加入最愛'}
                     onClick={(event) => {
                       event.stopPropagation();
                       toggleFavorite({ provider, id: model.id, name: model.name });

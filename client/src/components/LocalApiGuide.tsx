@@ -8,16 +8,16 @@ type ClientId = 'claude-code' | 'codex' | 'deepseek' | 'other';
 type Shell = 'powershell' | 'bash';
 
 const TABS: readonly { readonly id: GuideTab; readonly label: string }[] = [
-  { id: 'status', label: 'What works now' },
-  { id: 'connect', label: 'Connect an app' },
-  { id: 'settings', label: 'Settings explained' },
+  { id: 'status', label: '目前可用功能' },
+  { id: 'connect', label: '連接 App' },
+  { id: 'settings', label: '設定說明' },
 ];
 
 const CLIENTS: readonly { readonly id: ClientId; readonly label: string }[] = [
   { id: 'claude-code', label: 'Claude Code' },
   { id: 'codex', label: 'Codex CLI' },
   { id: 'deepseek', label: 'DeepSeek Harness' },
-  { id: 'other', label: 'Any other app' },
+  { id: 'other', label: '其他任何 App' },
 ];
 
 interface GuideProps {
@@ -103,7 +103,7 @@ function ConnectInstructions({
       return (
         <>
           <ol className="guide-steps">
-            <li>Load a model with a long context: 32K at least, 64K is better for agents.</li>
+            <li>請載入長上下文模型：至少 32K，agent 用 64K 更好。</li>
             <li>
               Run these lines in the terminal where you start Claude Code. They last until you close
               the terminal.
@@ -119,11 +119,11 @@ function ConnectInstructions({
           />
           <ul className="guide-notes">
             <li>
-              The base URL has <b>no</b> <code>/v1</code>: Claude Code adds it and calls{' '}
+              Base URL 包含 <b>no</b> <code>/v1</code>: Claude Code adds it and calls{' '}
               <code>/v1/messages</code>.
             </li>
             <li>
-              Both model variables use the <b>same</b> id. ThreadShelf keeps one model in memory, so
+              兩個模型變數都使用 <b>same</b> id. ThreadShelf keeps one model in memory, so
               a second model for background tasks would reload models all the time.
             </li>
             <li>
@@ -139,7 +139,7 @@ function ConnectInstructions({
         <>
           <ol className="guide-steps">
             <li>
-              Open <code>~/.codex/config.toml</code> (on Windows{' '}
+              開啟 <code>~/.codex/config.toml</code> (on Windows{' '}
               <code>%USERPROFILE%\.codex\config.toml</code>) and add:
             </li>
           </ol>
@@ -155,7 +155,7 @@ wire_api = "responses"${keyRequired ? '\nenv_key = "THREADSHELF_API_KEY"' : ''}`
           {keyRequired && (
             <>
               <ol className="guide-steps" start={2}>
-                <li>Put the key where Codex can read it, then start Codex:</li>
+                <li>把金鑰放在 Codex 讀得到的位置，然後啟動 Codex：</li>
               </ol>
               <Snippet code={`${envLines(shell, [['THREADSHELF_API_KEY', apiKey]])}\ncodex`} />
             </>
@@ -165,7 +165,7 @@ wire_api = "responses"${keyRequired ? '\nenv_key = "THREADSHELF_API_KEY"' : ''}`
               <code>wire_api = "responses"</code> is required: current Codex versions refuse to
               start with <code>"chat"</code>. ThreadShelf serves <code>/v1/responses</code>.
             </li>
-            <li>Codex is an agent: give the model 32K or more of context.</li>
+            <li>Codex 是 agent：請給模型 32K 以上的上下文。</li>
           </ul>
         </>
       );
@@ -174,7 +174,7 @@ wire_api = "responses"${keyRequired ? '\nenv_key = "THREADSHELF_API_KEY"' : ''}`
         <>
           <ol className="guide-steps">
             <li>
-              In DeepSeek Harness open <b>Settings → Models → Add a custom provider</b> and enter
+              在 DeepSeek Harness 開啟 <b>設定 → 模型 → 新增自訂供應者</b> and enter
               the values below. Or add the same block to <code>$DSH_HOME/settings.yaml</code>:
             </li>
           </ol>
@@ -200,7 +200,7 @@ wire_api = "responses"${keyRequired ? '\nenv_key = "THREADSHELF_API_KEY"' : ''}`
           />
           <ul className="guide-notes">
             <li>
-              Pick <b>ThreadShelf</b> and the model in the session's model picker.
+              選擇 <b>ThreadShelf</b> and the model in the session's model picker.
             </li>
             <li>
               If your harness version names the fields differently, the values are: base URL{' '}
@@ -214,15 +214,15 @@ wire_api = "responses"${keyRequired ? '\nenv_key = "THREADSHELF_API_KEY"' : ''}`
       return (
         <>
           <p className="guide-text">
-            Choose the app's <b>OpenAI-compatible</b> (or "custom OpenAI") provider, not an Ollama
+            選擇 App 的 <b>相容 OpenAI</b> (or "custom OpenAI") provider, not an Ollama
             preset, and fill in:
           </p>
           <div className="guide-fields">
             <span>Base URL</span>
             <code>{origin}/v1</code>
-            <span>API key</span>
+            <span>API 金鑰</span>
             <code>{keyRequired ? 'your ThreadShelf key' : 'anything, e.g. threadshelf'}</code>
-            <span>Model</span>
+            <span>模型</span>
             <code>{model}</code>
           </div>
           <p className="guide-text">
@@ -232,7 +232,7 @@ wire_api = "responses"${keyRequired ? '\nenv_key = "THREADSHELF_API_KEY"' : ''}`
           <ul className="guide-notes">
             <li>
               An app in Docker, a VM or on another device cannot reach this address. Turn on{' '}
-              <b>Serve on the local network</b> and use the network URL instead.
+              <b>在區域網路提供服務</b> and use the network URL instead.
             </li>
             <li>
               A "connection refused" error means ThreadShelf is not running; 401 means the key is
@@ -379,16 +379,16 @@ export function LocalApiGuide({ tab, onTab, config, model: chosenModel }: GuideP
       <div
         className="modal-card guide-modal"
         role="dialog"
-        aria-label="Local model API guide"
+        aria-label="本機模型 API 指南"
         onClick={(event) => event.stopPropagation()}
       >
         <div className="modal-head guide-head">
           <div>
-            <h3>Local model API guide</h3>
-            <p>Use the models in ThreadShelf from coding agents and other apps.</p>
+            <h3>本機模型 API 指南</h3>
+            <p>讓 coding agent 和其他 App 使用 ThreadShelf 的模型。</p>
           </div>
-          <button type="button" className="btn sm ghost" onClick={onClose} aria-label="Close">
-            Close
+          <button type="button" className="btn sm ghost" onClick={onClose} aria-label="關閉">
+            關閉
           </button>
         </div>
 
@@ -416,12 +416,12 @@ export function LocalApiGuide({ tab, onTab, config, model: chosenModel }: GuideP
                     ? `On at ${origin}/v1`
                     : 'Off. Apps get "403 api_disabled". Turn it on in Local model API.'}
                 </StatusRow>
-                <StatusRow label="Who can use it" ok={null}>
+                <StatusRow label="誰可以使用" ok={null}>
                   {network?.state === 'listening'
                     ? `This computer, and other devices at ${network.urls.join(', ') || `port ${network.port}`}`
                     : 'Only programs on this computer.'}
                 </StatusRow>
-                <StatusRow label="API key" ok={null}>
+                <StatusRow label="API 金鑰" ok={null}>
                   {api?.apiKeySource === 'env'
                     ? 'Required. Set by THREADSHELF_API_KEY.'
                     : keyRequired
@@ -429,24 +429,24 @@ export function LocalApiGuide({ tab, onTab, config, model: chosenModel }: GuideP
                       : 'Not required. Apps may send any key, or none.'}
                 </StatusRow>
                 {network?.state === 'error' && (
-                  <StatusRow label="Network port" ok={false}>
+                  <StatusRow label="網路埠" ok={false}>
                     {network.error}
                   </StatusRow>
                 )}
-                <StatusRow label="Model in memory" ok={null}>
+                <StatusRow label="記憶體中的模型" ok={null}>
                   {loaded
                     ? `${loaded.id}. Requests for it answer right away.`
                     : 'None. The first request loads the model it names.'}
                 </StatusRow>
-                <StatusRow label="Unload when idle" ok={null}>
+                <StatusRow label="閒置時卸載" ok={null}>
                   {idleText(config?.llamaCpp.idleUnloadMinutes)}
                 </StatusRow>
-                <StatusRow label="Engine" ok={null}>
+                <StatusRow label="引擎" ok={null}>
                   {external
                     ? `Your own llama-server at ${external}.`
                     : 'llama.cpp managed by ThreadShelf, one model at a time.'}
                 </StatusRow>
-                <StatusRow label="Models available" ok={models.length > 0}>
+                <StatusRow label="可用模型" ok={models.length > 0}>
                   {models.length > 0
                     ? `${models.length}: ${models
                         .slice(0, 4)
@@ -456,44 +456,44 @@ export function LocalApiGuide({ tab, onTab, config, model: chosenModel }: GuideP
                 </StatusRow>
               </div>
 
-              <h4 className="guide-subhead">What the API can do</h4>
+              <h4 className="guide-subhead">API 能做什麼</h4>
               <table className="guide-table">
                 <tbody>
                   <tr>
                     <td>
                       <code>GET /v1/models</code>
                     </td>
-                    <td>List your models; the loaded one has "loaded": true.</td>
+                    <td>列出模型；已載入的會標示 "loaded": true。</td>
                   </tr>
                   <tr>
                     <td>
                       <code>POST /v1/chat/completions</code>
                     </td>
-                    <td>Chat, OpenAI style. Used by most apps.</td>
+                    <td>聊天（OpenAI 格式），多數 App 使用。</td>
                   </tr>
                   <tr>
                     <td>
                       <code>POST /v1/responses</code>
                     </td>
-                    <td>OpenAI Responses API. Used by Codex.</td>
+                    <td>OpenAI Responses API，Codex 使用。</td>
                   </tr>
                   <tr>
                     <td>
                       <code>POST /v1/messages</code>
                     </td>
-                    <td>Chat, Anthropic style. Used by Claude Code.</td>
+                    <td>聊天（Anthropic 格式），Claude Code 使用。</td>
                   </tr>
                   <tr>
                     <td>
                       <code>POST /v1/completions</code>
                     </td>
-                    <td>Plain text completion (older apps).</td>
+                    <td>純文字補全（舊版 App）。</td>
                   </tr>
                   <tr>
                     <td>
                       <code>POST /v1/models/unload</code>
                     </td>
-                    <td>Free the GPU memory now.</td>
+                    <td>立即釋放 GPU 記憶體。</td>
                   </tr>
                 </tbody>
               </table>
@@ -503,7 +503,7 @@ export function LocalApiGuide({ tab, onTab, config, model: chosenModel }: GuideP
                 Requests from apps are never saved to your archive.
               </p>
               <p className="guide-text">
-                <b>One model at a time.</b> Asking for another model swaps it in, freeing the old
+                <b>一次一個模型。</b> Asking for another model swaps it in, freeing the old
                 one's memory first. While one model is answering, a request for a different model
                 gets "503 model_busy" and apps retry.
               </p>
@@ -545,10 +545,10 @@ export function LocalApiGuide({ tab, onTab, config, model: chosenModel }: GuideP
                 )}
               </div>
               {!enabled && (
-                <div className="banner warn">The API is off. Turn it on before connecting.</div>
+                <div className="banner warn">API 已關閉，請先開啟再連接。</div>
               )}
               <p className="guide-text">
-                Filled in with <code>{model}</code>
+                填入 <code>{model}</code>
                 {loaded?.id === model ? ' (loaded now)' : ''}. Pick another model id in the Local
                 model API panel to change the examples.
               </p>

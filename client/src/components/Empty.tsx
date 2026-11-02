@@ -8,10 +8,10 @@ interface EmptyProps {
 export function Empty({ onPick }: EmptyProps) {
   return (
     <div className="empty">
-      <h3>Ask your archive in plain language.</h3>
+      <h3>用自然語言詢問你的封存。</h3>
       <p>
-        ThreadShelf runs locally — your queries embed on this machine and search a local LanceDB.
-        Try a topic, a draft you half-remember, or the shape of an answer you're looking for.
+        ThreadShelf 在本機執行：查詢在這台電腦上做 embedding，並搜尋本機 LanceDB。
+        試試一個主題、一段記不清的草稿，或你想找的答案的樣子。
       </p>
       <div className="examples">
         {EXAMPLE_QUERIES.map((q) => (

@@ -83,9 +83,9 @@ export function LlamaLogPanel({ model, active }: LlamaLogPanelProps) {
                 .join(' · ')}
             </span>
           ) : diagnostics?.deviceDetectionSupported ? (
-            <span>No accelerator reported by this llama.cpp executable.</span>
+            <span>此 llama.cpp 執行檔未回報加速器。</span>
           ) : (
-            <span>VRAM/device reporting is unavailable for this executable.</span>
+            <span>此執行檔無法回報 VRAM 或裝置資訊。</span>
           )}
         </div>
         {diagnostics?.offload.deviceBufferMiB && (
@@ -131,7 +131,7 @@ export function LlamaLogPanel({ model, active }: LlamaLogPanelProps) {
               );
             }}
           >
-            Copy logs
+            複製記錄
           </button>
         </div>
         {error && <div className="banner err">{error}</div>}
