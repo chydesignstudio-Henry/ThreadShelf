@@ -50,7 +50,7 @@ const continuationFromTurns = (turns: readonly ThreadTurn[]): ContinuationMessag
 // derived in `src/generation/threads.ts`.
 const titleFromMessages = (messages: readonly ContinuationMessage[]): string => {
   const prompt = messages.find((message) => message.role === 'user')?.content.trim();
-  if (!prompt) return 'New chat';
+  if (!prompt) return '新聊天';
   const compact = prompt.replace(/\s+/g, ' ');
   return compact.length > 52 ? `${compact.slice(0, 49)}…` : compact;
 };
@@ -111,7 +111,7 @@ export function ChatPage() {
       })
       .catch((cause: unknown) => {
         if (cause instanceof DOMException && cause.name === 'AbortError') return;
-        setError(cause instanceof Error ? cause.message : 'Could not load local chats.');
+        setError(cause instanceof Error ? cause.message : '無法載入本機聊天。');
       })
       .finally(() => setLoading(false));
     return () => controller.abort();
@@ -127,7 +127,7 @@ export function ChatPage() {
       .then(setChat)
       .catch((cause: unknown) => {
         if (cause instanceof DOMException && cause.name === 'AbortError') return;
-        setError(cause instanceof Error ? cause.message : 'Could not open this chat.');
+        setError(cause instanceof Error ? cause.message : '無法開啟此聊天。');
       });
     return () => controller.abort();
   }, [activeId]);
@@ -181,7 +181,7 @@ export function ChatPage() {
   }, [activeId]);
 
   const handleCreateDraftThread = useCallback(async (): Promise<string> => {
-    const created = await api.createGenerationThread('New chat');
+    const created = await api.createGenerationThread('新聊天');
     setThreads((current) => [created, ...current.filter((item) => item.id !== created.id)]);
     queryClient.setQueryData<{ threads: ThreadShelfChatSummary[] }>(
       ['generation-threads'],
@@ -229,7 +229,7 @@ export function ChatPage() {
       await queryClient.invalidateQueries({ queryKey: ['generation-threads'] });
       toast.success('已重新命名聊天。');
     } catch (cause) {
-      setError(cause instanceof Error ? cause.message : 'Could not rename this chat.');
+      setError(cause instanceof Error ? cause.message : '無法重新命名此聊天。');
     }
   };
 
@@ -242,7 +242,7 @@ export function ChatPage() {
       const confirmed = await confirmDialog({
         title: '要刪除這個私密聊天嗎？',
         message: '此未儲存的工作階段及其復原紀錄會從此分頁移除。',
-        confirmLabel: 'Delete chat',
+        confirmLabel: '刪除聊天',
         danger: true,
       });
       if (!confirmed) return;
@@ -257,7 +257,7 @@ export function ChatPage() {
     const confirmed = await confirmDialog({
       title: `Delete “${thread.title}”?`,
       message: '此對話及其搜尋索引會被永久刪除。',
-      confirmLabel: 'Delete chat',
+      confirmLabel: '刪除聊天',
       danger: true,
     });
     if (!confirmed) return;
@@ -277,7 +277,7 @@ export function ChatPage() {
       ]);
       toast.success('已刪除對話。');
     } catch (cause) {
-      setError(cause instanceof Error ? cause.message : 'Could not delete this chat.');
+      setError(cause instanceof Error ? cause.message : '無法刪除此聊天。');
     }
   };
 
@@ -287,9 +287,7 @@ export function ChatPage() {
       const [updated] = await Promise.all([api.generationThread(activeId), loadList()]);
       setChat(updated);
     } catch (cause) {
-      setError(
-        cause instanceof Error ? cause.message : 'The chat was saved but could not refresh.',
-      );
+      setError(cause instanceof Error ? cause.message : '聊天已儲存，但無法重新整理。');
     }
   }, [activeId, loadList]);
 
@@ -307,7 +305,7 @@ export function ChatPage() {
   const title = isPrivate
     ? titleFromMessages(privateSession.messages)
     : isDraft
-      ? 'New chat'
+      ? '新聊天'
       : (chat?.title ?? 'Chat');
 
   return (
