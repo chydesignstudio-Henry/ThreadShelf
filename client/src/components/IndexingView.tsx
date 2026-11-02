@@ -10,14 +10,14 @@ function formatProgressStep(event: IngestStreamEvent): string {
   const done = event.processedFiles || 0;
   const phase = (event.phase || '').toLowerCase();
 
-  if (phase === 'uploading') return `Uploading ${done} / ${total} files`;
-  if (phase === 'reading') return `Reading ${done} / ${total} files`;
+  if (phase === 'uploading') return `上傳中 ${done} / ${total} 個檔案`;
+  if (phase === 'reading') return `讀取中 ${done} / ${total} 個檔案`;
   if (phase === 'embedding')
     return event.embeddingTotal !== undefined
-      ? `Embedding ${event.embeddingDone ?? 0} / ${event.embeddingTotal} chunks`
-      : `Embedding ${done} / ${total} files`;
-  if (event.status === 'starting') return `Starting 0 / ${total} files`;
-  return `${done} / ${total} files`;
+      ? `嵌入中 ${event.embeddingDone ?? 0} / ${event.embeddingTotal} 個區塊`
+      : `嵌入中 ${done} / ${total} 個檔案`;
+  if (event.status === 'starting') return `開始 0 / ${total} 個檔案`;
+  return `${done} / ${total} 個檔案`;
 }
 
 function progressFromEvent(event: IngestStreamEvent): IngestProgress {
@@ -36,15 +36,13 @@ function progressFromEvent(event: IngestStreamEvent): IngestProgress {
 function formatCompletedMessage(event: IngestStreamEvent): string {
   const result = event.result;
   if (result?.replacementSkipped)
-    return 'Nothing was saved. The existing collection was kept because the folder contains empty or invalid exports, or no conversations. Fix the exports and retry.';
+    return '未儲存任何資料。由於資料夾內的匯出檔為空、無效或沒有對話，已保留現有收藏集。請修正匯出檔後重試。';
   const fileCount = result?.files?.length ?? 0;
   const conversations = result?.conversations ?? fileCount;
   const errorCount = result?.errors?.length ?? 0;
 
-  const summary = `Indexed ${conversations} conversations as ${result?.ingested ?? 0} chunks from ${fileCount} files in ${fmtTime(result?.elapsedMs ?? 0)}.`;
-  return errorCount
-    ? `${summary} ${errorCount} file${errorCount === 1 ? '' : 's'} failed.`
-    : summary;
+  const summary = `已在 ${fmtTime(result?.elapsedMs ?? 0)} 內從 ${fileCount} 個檔案索引 ${conversations} 段對話，共 ${result?.ingested ?? 0} 個區塊。`;
+  return errorCount ? `${summary}${errorCount} 個檔案失敗。` : summary;
 }
 
 interface IndexingViewProps {
@@ -139,7 +137,7 @@ export function IndexingView({ collections, onRefresh }: IndexingViewProps) {
       setCopied(file);
       setTimeout(() => setCopied(''), 2500);
     } catch {
-      setStatusMsg({ type: 'err', text: `Could not copy script — open scripts/${file} manually.` });
+      setStatusMsg({ type: 'err', text: `無法複製腳本，請手動開啟 scripts/${file}。` });
     }
   }, []);
 
@@ -155,7 +153,7 @@ export function IndexingView({ collections, onRefresh }: IndexingViewProps) {
     const first = relativePathOf(files[0]!).replace(/\\/g, '/');
     const folder = first.split('/')[0] ?? 'folder';
     const sup = files.filter((f) => isPotentialExport(relativePathOf(f)));
-    setPickedLabel(`${sup.length} files from "${folder}"`);
+    setPickedLabel(`來自「${folder}」的 ${sup.length} 個檔案`);
     setPreview(
       files.map((f) => {
         const relPath = relativePathOf(f);
@@ -205,8 +203,8 @@ export function IndexingView({ collections, onRefresh }: IndexingViewProps) {
       const d = await api.ingestPreview(path, targetColl);
       const duplicatePaths = new Set(d.duplicates.map((item) => item.sourceFile));
       setPickedLabel(
-        `${d.files.length} export files found${
-          duplicatePaths.size ? `, ${duplicatePaths.size} will be re-indexed` : ''
+        `找到 ${d.files.length} 個匯出檔${
+          duplicatePaths.size ? `，其中 ${duplicatePaths.size} 個將重新索引` : ''
         }`,
       );
       setPreview(
@@ -220,7 +218,7 @@ export function IndexingView({ collections, onRefresh }: IndexingViewProps) {
         }),
       );
     } catch (e) {
-      setPickedLabel(`Error: ${e instanceof Error ? e.message : 'Unknown'}`);
+      setPickedLabel(`錯誤：${e instanceof Error ? e.message : '未知'}`);
     }
   }, [path, targetColl]);
 
@@ -253,7 +251,7 @@ export function IndexingView({ collections, onRefresh }: IndexingViewProps) {
         return;
       }
       if (event.status === 'error') {
-        setStatusMsg({ type: 'err', text: `Error: ${event.error ?? 'Unknown'}` });
+        setStatusMsg({ type: 'err', text: `錯誤：${event.error ?? '未知'}` });
         return;
       }
 
@@ -270,7 +268,7 @@ export function IndexingView({ collections, onRefresh }: IndexingViewProps) {
       if (controller.signal.aborted) {
         setStatusMsg({ type: 'info', text: '已停止索引。已完成的檔案仍保留索引。' });
       } else {
-        setStatusMsg({ type: 'err', text: `Error: ${e instanceof Error ? e.message : 'Unknown'}` });
+        setStatusMsg({ type: 'err', text: `錯誤：${e instanceof Error ? e.message : '未知'}` });
       }
     } finally {
       if (indexingController.current === controller) indexingController.current = null;
@@ -295,7 +293,7 @@ export function IndexingView({ collections, onRefresh }: IndexingViewProps) {
         <summary
           style={{ cursor: 'pointer', padding: '12px 14px', fontWeight: 500, listStyle: 'revert' }}
         >
-          {Icons.info} Where to get your data (export guides)
+          {Icons.info} 如何取得資料（匯出指南）
         </summary>
         <div
           style={{
@@ -307,8 +305,8 @@ export function IndexingView({ collections, onRefresh }: IndexingViewProps) {
           }}
         >
           <div>
-            <b style={{ color: 'var(--text-1)' }}>OpenRouter</b> — no built-in export. Run a
-            browser-console script, then index the downloaded folder:
+            <b style={{ color: 'var(--text-1)' }}>OpenRouter</b> —
+            沒有內建匯出功能。請執行瀏覽器主控台腳本，再索引下載的資料夾：
             <ol style={{ margin: '6px 0', paddingLeft: 20, lineHeight: 1.7 }}>
               <li>在已登入的 openrouter.ai 開啟聊天清單。</li>
               <li>
@@ -323,25 +321,21 @@ export function IndexingView({ collections, onRefresh }: IndexingViewProps) {
                 onClick={() => void copyScript('openrouter-export-all.js')}
               >
                 {Icons.copy}{' '}
-                {copied === 'openrouter-export-all.js'
-                  ? 'Copied!'
-                  : 'Copy “export all chats” script'}
+                {copied === 'openrouter-export-all.js' ? '已複製！' : '複製「匯出全部聊天」腳本'}
               </button>
               <button
                 className="btn sm"
                 onClick={() => void copyScript('openrouter-export-browser.js')}
               >
                 {Icons.copy}{' '}
-                {copied === 'openrouter-export-browser.js'
-                  ? 'Copied!'
-                  : 'Copy “single chat” script'}
+                {copied === 'openrouter-export-browser.js' ? '已複製！' : '複製「單一聊天」腳本'}
               </button>
             </div>
           </div>
 
           <div>
-            <b style={{ color: 'var(--text-1)' }}>LM Studio</b> — point at its local conversation
-            folder (paste into “paste path” below):
+            <b style={{ color: 'var(--text-1)' }}>LM Studio</b> —
+            指向其本機對話資料夾（貼到下方「貼上路徑」）：
             <ul style={{ margin: '6px 0', paddingLeft: 20, lineHeight: 1.8 }}>
               <li>
                 Windows： <code>%USERPROFILE%\.lmstudio\conversations\</code>
@@ -356,14 +350,15 @@ export function IndexingView({ collections, onRefresh }: IndexingViewProps) {
           </div>
 
           <div>
-            <b style={{ color: 'var(--text-1)' }}>Google AI Studio</b> — download your Google Drive
-            “Google AI Studio” folder, unzip it, and index that folder (files may have no extension
-            — that’s fine). Text chats and Imagen prompt histories are supported.
+            <b style={{ color: 'var(--text-1)' }}>Google AI Studio</b> — 下載 Google Drive
+            中的「Google AI
+            Studio」資料夾，解壓縮後索引該資料夾（檔案可能沒有副檔名，這沒關係）。支援文字聊天與
+            Imagen 提示紀錄。
           </div>
 
           <div>
-            <b style={{ color: 'var(--text-1)' }}>ChatGPT / Claude</b> — use the app’s official data
-            export, then index the <code>conversations.json</code> it produces.
+            <b style={{ color: 'var(--text-1)' }}>ChatGPT / Claude</b> —
+            使用該應用程式的官方資料匯出，再索引產生的 <code>conversations.json</code>。
           </div>
         </div>
       </details>
@@ -385,9 +380,8 @@ export function IndexingView({ collections, onRefresh }: IndexingViewProps) {
         <div className="ico-big">{Icons.folder}</div>
         <h3>把匯出資料夾拖曳到這裡</h3>
         <p>
-          Supported: Google AI Studio, OpenRouter, ChatGPT/OpenAI, Claude/Anthropic, LM Studio, and
-          Grok JSON exports. Subfolders are recursed; account metadata files are skipped
-          automatically.
+          支援：Google AI Studio、OpenRouter、ChatGPT/OpenAI、Claude/Anthropic、LM Studio 與 Grok
+          JSON 匯出。會遞迴掃描子資料夾，並自動略過帳號中繼資料檔。
         </p>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
           <input
@@ -403,7 +397,7 @@ export function IndexingView({ collections, onRefresh }: IndexingViewProps) {
             onChange={onPickFolder}
           />
           <button className="btn primary" onClick={() => pickerRef.current?.click()}>
-            {Icons.folder} Choose folder
+            {Icons.folder} 選擇資料夾
           </button>
           {pickedLabel && (
             <span
@@ -424,7 +418,7 @@ export function IndexingView({ collections, onRefresh }: IndexingViewProps) {
             placeholder="/匯出資料夾的絕對路徑"
           />
           <button className="btn" onClick={onUsePath} disabled={!path}>
-            {Icons.arrowRight} Use path
+            {Icons.arrowRight} 使用路徑
           </button>
         </div>
       </div>
@@ -450,7 +444,7 @@ export function IndexingView({ collections, onRefresh }: IndexingViewProps) {
           onClick={() => setNewCollOpen(true)}
           title="建立新收藏集"
         >
-          {Icons.plus} New
+          {Icons.plus} 新增
         </button>
         <label>
           <input
@@ -458,10 +452,10 @@ export function IndexingView({ collections, onRefresh }: IndexingViewProps) {
             checked={clearFirst}
             onChange={(e) => setClearFirst(e.target.checked)}
           />{' '}
-          Clear collection first
+          先清空收藏集
         </label>
         <button id="ingestBtn" className="btn primary" onClick={doIndex} disabled={running}>
-          {Icons.zap} {running ? 'Indexing…' : '索引資料夾'}
+          {Icons.zap} {running ? '索引中…' : '索引資料夾'}
         </button>
         {running && (
           <button
@@ -479,8 +473,8 @@ export function IndexingView({ collections, onRefresh }: IndexingViewProps) {
           <div className="panel-head">
             <h3>匯入預覽</h3>
             <span className="sub">
-              {preview.filter((f) => f.ok).length} ok · {preview.filter((f) => !f.ok).length}{' '}
-              skipped
+              {preview.filter((f) => f.ok).length} 個可用 · {preview.filter((f) => !f.ok).length}{' '}
+              個略過
             </span>
           </div>
           <div style={{ maxHeight: 260, overflow: 'auto' }}>

@@ -227,7 +227,7 @@ export function ChatPage() {
         current.map((item) => (item.id === updated.id ? { ...item, title: updated.title } : item)),
       );
       await queryClient.invalidateQueries({ queryKey: ['generation-threads'] });
-      toast.success('Chat renamed.');
+      toast.success('已重新命名聊天。');
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : 'Could not rename this chat.');
     }
@@ -250,7 +250,7 @@ export function ChatPage() {
     clearPrivateSession();
     setChat(undefined);
     setActiveId(threads[0]?.id ?? '');
-    toast.success('Private chat deleted.');
+    toast.success('已刪除私密聊天。');
   };
 
   const deleteChat = async (thread: ThreadShelfChatSummary) => {
@@ -275,7 +275,7 @@ export function ChatPage() {
         queryClient.invalidateQueries({ queryKey: ['collections'] }),
         queryClient.invalidateQueries({ queryKey: ['generation-threads'] }),
       ]);
-      toast.success('Conversation deleted.');
+      toast.success('已刪除對話。');
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : 'Could not delete this chat.');
     }
@@ -322,11 +322,10 @@ export function ChatPage() {
                 <span className="chat-empty-icon">{Icons.plus}</span>
                 <h1>開始新對話</h1>
                 <p>
-                  Chats created here are separate from your imported archive. They stay local and
-                  become searchable after each complete response.
+                  在這裡建立的聊天與匯入的封存分開保存，只存在本機，並會在每次完整回應後變得可搜尋。
                 </p>
                 <button className="btn primary" onClick={() => startSavedChat()}>
-                  {Icons.plus} New chat
+                  {Icons.plus} 新聊天
                 </button>
               </div>
             )}
@@ -361,12 +360,9 @@ export function ChatPage() {
                       </h1>
                     )}
                     {isPrivate ? (
-                      <span className="chat-storage-badge private">{Icons.ghost} Private</span>
+                      <span className="chat-storage-badge private">{Icons.ghost} 私密</span>
                     ) : (
-                      <span
-                        className="chat-storage-badge saved"
-                        title="存在本機並已索引供搜尋"
-                      >
+                      <span className="chat-storage-badge saved" title="存在本機並已索引供搜尋">
                         已存在本機
                       </span>
                     )}
@@ -384,7 +380,7 @@ export function ChatPage() {
                     {isPrivate ? (
                       <div className="saved-chat-actions">
                         <button className="btn sm ghost" onClick={() => void clearPrivateChat()}>
-                          {Icons.trash} Delete
+                          {Icons.trash} 刪除
                         </button>
                       </div>
                     ) : (
@@ -398,7 +394,7 @@ export function ChatPage() {
                             重新命名
                           </button>
                           <button className="btn sm ghost" onClick={() => void deleteChat(chat)}>
-                            {Icons.trash} Delete
+                            {Icons.trash} 刪除
                           </button>
                         </div>
                       )
