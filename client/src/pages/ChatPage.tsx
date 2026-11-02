@@ -255,7 +255,7 @@ export function ChatPage() {
 
   const deleteChat = async (thread: ThreadShelfChatSummary) => {
     const confirmed = await confirmDialog({
-      title: `Delete “${thread.title}”?`,
+      title: `要刪除「${thread.title}」嗎？`,
       message: '此對話及其搜尋索引會被永久刪除。',
       confirmLabel: '刪除聊天',
       danger: true,
@@ -368,12 +368,12 @@ export function ChatPage() {
                   <div className="chat-hero-actions">
                     <span className="chat-storage-status">
                       {isPrivate
-                        ? 'Not saved or indexed · removed on reload or when this tab closes'
+                        ? '未儲存也未索引 · 重新載入或關閉分頁時移除'
                         : isDraft
-                          ? 'Not saved yet · a chat is created on your first message'
+                          ? '尚未儲存 · 傳送第一則訊息時建立聊天'
                           : chat?.updatedAt
-                            ? `Updated ${fmtRelative(chat.updatedAt) || 'just now'}`
-                            : 'Saved locally by default'}
+                            ? `更新於 ${fmtRelative(chat.updatedAt) || '剛剛'}`
+                            : '預設儲存在本機'}
                     </span>
                     {isPrivate ? (
                       <div className="saved-chat-actions">
