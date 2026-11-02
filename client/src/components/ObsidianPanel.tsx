@@ -1,14 +1,20 @@
 import { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from '../api';
-import type { DetectedNoteFolder, VaultApproval, VaultConfig, VaultNote, VaultSearch } from '../types';
+import type {
+  DetectedNoteFolder,
+  VaultApproval,
+  VaultConfig,
+  VaultNote,
+  VaultSearch,
+} from '../types';
 import { DirectoryPicker } from './DirectoryPicker';
 import { Markdown } from './Markdown';
 
 export const useVaultConfig = () =>
   useQuery({ queryKey: ['obsidian-config'], queryFn: ({ signal }) => api.vaultConfig(signal) });
 const errorText = (error: unknown): string =>
-  error instanceof Error ? error.message : 'Vault operation failed';
+  error instanceof Error ? error.message : '筆記庫操作失敗';
 export function VaultWriteToggle({ config }: { readonly config: VaultConfig }) {
   const queryClient = useQueryClient();
   const [pendingChoice, setPendingChoice] = useState<boolean | null>(null);
@@ -42,7 +48,7 @@ export function VaultWriteToggle({ config }: { readonly config: VaultConfig }) {
             mutation.mutate(event.target.checked);
           }}
         />{' '}
-        Allow vault writes
+        允許寫入筆記庫
       </label>
       {mutation.error && <p className="field-error">{errorText(mutation.error)}</p>}
     </div>
@@ -73,20 +79,14 @@ export function ObsidianChatControls({
           disabled={sending || !data?.vaultPath}
           onChange={(event) => onChange(event.target.checked)}
         />{' '}
-        Notes tools
+        筆記工具
       </label>
-      {data?.vaultPath ? (
-        <VaultWriteToggle config={data} />
-      ) : (
-        <a href="/notes">連接你的筆記</a>
-      )}
+      {data?.vaultPath ? <VaultWriteToggle config={data} /> : <a href="/notes">連接你的筆記</a>}
       {enabled && (
         <span className="vault-hint">
-          {external
-            ? 'Retrieved note text is sent to OpenRouter. '
-            : 'Search and note tools run locally. '}
-          {ephemeral && 'Private chat does not prevent enabled vault writes. '}
-          {data?.allowWrites ? 'Create/edit enabled; deletion always asks.' : 'Read-only.'}
+          {external ? '取得的筆記內容會傳送到 OpenRouter。' : '搜尋與筆記工具在本機執行。'}
+          {ephemeral && '私密聊天不會阻止已啟用的筆記庫寫入。'}
+          {data?.allowWrites ? '已啟用建立／編輯；刪除一律會詢問。' : '唯讀。'}
         </span>
       )}
       {error && <span className="field-error">{errorText(error)}</span>}
@@ -119,7 +119,7 @@ export function VaultDeleteApproval({
   return (
     <section className="vault-approval" role="group" aria-label="確認刪除筆記">
       <header>
-        <strong title={approval.model}>{approval.model} wants to delete the following files</strong>
+        <strong title={approval.model}>{approval.model} 要求刪除以下檔案</strong>
         <button
           className="btn sm ghost"
           aria-label="取消刪除筆記"
@@ -145,7 +145,7 @@ export function VaultDeleteApproval({
           disabled={busy}
           onChange={(event) => setChecked(event.target.checked)}
         />{' '}
-        I confirm deletion of these files
+        我確認刪除這些檔案
       </label>
       {error && <p className="field-error">{error}</p>}
       <footer>
@@ -202,7 +202,7 @@ export function ObsidianPanel() {
       setDraftPath(null);
       setResults(null);
       setNote(null);
-      setNotice(next.vaultPath ? 'Vault connected.' : 'Vault disconnected.');
+      setNotice(next.vaultPath ? '已連接筆記庫。' : '已中斷筆記庫連接。');
     });
   const suggestions = (detected?.folders ?? []).filter(
     (folder: DetectedNoteFolder) => folder.path !== config?.vaultPath,
@@ -215,9 +215,8 @@ export function ObsidianPanel() {
       </div>
       <div className="panel-body">
         <p>
-          Connect a folder of Markdown notes (an Obsidian vault, a Logseq graph, an OpenClaw
-          workspace or any folder of .md files) to search it here and give chat models note tools.
-          Notes stay in their original folder.
+          連接一個 Markdown 筆記資料夾（Obsidian 筆記庫、Logseq graph、OpenClaw 工作區或任何 .md
+          資料夾），即可在此搜尋，並讓聊天模型使用筆記工具。筆記會留在原本的資料夾。
         </p>
         {suggestions.length > 0 && (
           <div className="vault-detected">
@@ -263,10 +262,8 @@ export function ObsidianPanel() {
         </div>
         {config?.vaultPath && <VaultWriteToggle config={config} />}
         <p className="vault-hint">
-          A connected vault is read-only by default, including for MCP clients. Enable writes to
-          allow creating and editing notes; connecting a different vault turns them off again.
-          Hidden folders, attachments and symlinks are excluded. Deletion always requires a separate
-          checkbox and confirmation in chat.
+          已連接的筆記庫預設為唯讀（MCP
+          用戶端也一樣）。開啟寫入才能建立與編輯筆記；改連其他筆記庫時會再次關閉。隱藏資料夾、附件與符號連結都會排除。刪除一律需另外勾選並在聊天中確認。
         </p>
         {config?.vaultPath && (
           <>
@@ -295,10 +292,9 @@ export function ObsidianPanel() {
             {results && (
               <div className="vault-results">
                 <p>
-                  {results.hits.length} results · {results.scanned} notes scanned
-                  {results.skipped > 0 &&
-                    ` · ${results.skipped} unsafe or unreadable files skipped`}
-                  {results.truncated && ' · scan limit reached; use a smaller vault'}
+                  {results.hits.length} 筆結果 · 已掃描 {results.scanned} 則筆記
+                  {results.skipped > 0 && ` · 已略過 ${results.skipped} 個不安全或無法讀取的檔案`}
+                  {results.truncated && ' · 已達掃描上限，請使用較小的筆記庫'}
                 </p>
                 {results.hits.map((hit) => (
                   <button
@@ -357,7 +353,7 @@ export function ObsidianPanel() {
                     setNote(await api.createVaultNote(newPath, content));
                     setNewPath('');
                     setContent('');
-                    setNotice('Markdown note created.');
+                    setNotice('已建立 Markdown 筆記。');
                   })
                 }
               >

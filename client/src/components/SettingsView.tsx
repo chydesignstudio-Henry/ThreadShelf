@@ -43,11 +43,11 @@ export function SettingsView({ activeColl, stats, onRefresh, onDeleted }: Settin
 
   const doClear = useCallback(async () => {
     if (activeColl === 'threadshelf_conversations') {
-      toast.error('ThreadShelf conversations are managed from the Chat page.');
+      toast.error('ThreadShelf 對話請在「聊天」頁面管理。');
       return;
     }
     const ok = await confirmDialog({
-      title: `Clear indexed data for "${collLabel(activeColl)}"?`,
+      title: `要清除「${collLabel(activeColl)}」的索引資料嗎？`,
       message: '會刪除所有向量，但保留收藏集本身。',
       confirmLabel: '清除資料',
       danger: true,
@@ -56,7 +56,7 @@ export function SettingsView({ activeColl, stats, onRefresh, onDeleted }: Settin
     try {
       await clearMutation.mutateAsync(activeColl);
       void onRefresh();
-      toast.success(`Cleared "${collLabel(activeColl)}".`);
+      toast.success(`已清除「${collLabel(activeColl)}」。`);
     } catch (e) {
       toast.error(e instanceof Error ? e.message : '未知錯誤');
     }
@@ -68,9 +68,8 @@ export function SettingsView({ activeColl, stats, onRefresh, onDeleted }: Settin
       return;
     }
     const ok = await confirmDialog({
-      title: `Delete collection "${collLabel(activeColl)}"?`,
-      message:
-        '會刪除索引與先前透過 ThreadShelf 上傳的副本。你原本選擇的資料夾中的檔案不受影響。',
+      title: `要刪除收藏集「${collLabel(activeColl)}」嗎？`,
+      message: '會刪除索引與先前透過 ThreadShelf 上傳的副本。你原本選擇的資料夾中的檔案不受影響。',
       confirmLabel: 'Delete',
       danger: true,
     });
@@ -78,7 +77,7 @@ export function SettingsView({ activeColl, stats, onRefresh, onDeleted }: Settin
     try {
       await deleteMutation.mutateAsync(activeColl);
       await onRefresh();
-      toast.success(`Deleted "${collLabel(activeColl)}".`);
+      toast.success(`已刪除「${collLabel(activeColl)}」。`);
       onDeleted();
     } catch (e) {
       toast.error(e instanceof Error ? e.message : '未知錯誤');
@@ -195,22 +194,19 @@ export function SettingsView({ activeColl, stats, onRefresh, onDeleted }: Settin
         </div>
         <div className="panel-body" style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
           {activeColl === 'threadshelf_conversations' ? (
-            <p className="muted">
-              This protected collection is maintained automatically from chats created or continued
-              in ThreadShelf.
-            </p>
+            <p className="muted">此受保護的收藏集會依你在 ThreadShelf 建立或接續的聊天自動維護。</p>
           ) : (
             <>
               <DangerRow
                 title="清除索引資料"
-                desc="Drop all vectors but keep the collection itself."
+                desc="移除所有向量，但保留收藏集本身。"
                 btn="清除資料"
                 onClick={doClear}
               />
               <DangerRow
                 title="刪除收藏集"
-                desc="Delete the index and ThreadShelf upload copies. Files in your original folder stay untouched."
-                btn="Delete"
+                desc="刪除索引與 ThreadShelf 上傳副本；原始資料夾中的檔案不受影響。"
+                btn="刪除"
                 onClick={doDelete}
               />
             </>

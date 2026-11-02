@@ -55,9 +55,9 @@ export function GenerationRuntimeBadge({ detailed = false }: { readonly detailed
       const response = await api.ejectGenerationModel(runtime?.model);
       setRuntime(response.runtime);
       window.dispatchEvent(new Event('threadshelf:generation-runtime-changed'));
-      toast.success('llama.cpp model ejected from memory.');
+      toast.success('已從記憶體退出 llama.cpp 模型。');
     } catch (cause) {
-      toast.error(cause instanceof Error ? cause.message : 'Could not eject the model.');
+      toast.error(cause instanceof Error ? cause.message : '無法退出模型。');
     } finally {
       setEjecting(false);
     }
@@ -73,11 +73,11 @@ export function GenerationRuntimeBadge({ detailed = false }: { readonly detailed
     if (!runtime || !diagnostics) return 'unknown';
     if (runtime.state === 'stopped') {
       return diagnostics.devices.length > 0
-        ? `idle · GPU (${deviceBackend || 'accelerator'})`
-        : 'idle · CPU';
+        ? `閒置 · GPU (${deviceBackend || 'accelerator'})`
+        : '閒置 · CPU';
     }
     if (diagnostics.offload.mode === 'hybrid') {
-      return `hybrid ${diagnostics.offload.gpuPercent}% GPU`;
+      return `混合 ${diagnostics.offload.gpuPercent}% GPU`;
     }
     if (diagnostics.offload.mode === 'gpu') return `GPU · ${deviceBackend || 'accelerator'}`;
     if (diagnostics.offload.mode === 'cpu') return 'CPU';
@@ -85,22 +85,22 @@ export function GenerationRuntimeBadge({ detailed = false }: { readonly detailed
     return diagnostics.deviceDetectionSupported ? 'CPU' : 'unknown';
   })();
   const installTooltip = [
-    diagnostics?.executable ? `Selected executable: ${diagnostics.executable}` : undefined,
-    `Detected compute: ${compute}`,
+    diagnostics?.executable ? `選定執行檔：${diagnostics.executable}` : undefined,
+    `偵測到的運算：${compute}`,
     '',
-    'Check for a newer stable llama.cpp build:',
+    '檢查是否有更新的 llama.cpp 穩定版：',
     'npm run setup:llama -- -- --check',
     '',
-    'Install CPU:',
+    '安裝 CPU 版：',
     'npm run setup:llama -- -- --install --variant cpu',
     '',
-    'Install NVIDIA CUDA:',
+    '安裝 NVIDIA CUDA 版：',
     'npm run setup:llama -- -- --install --variant cuda',
     '',
-    'Install Vulkan GPU:',
+    '安裝 Vulkan GPU 版：',
     'npm run setup:llama -- -- --install --variant vulkan',
     '',
-    'macOS: use the cpu variant; Metal is included automatically.',
+    'macOS：使用 cpu 版；已自動包含 Metal。',
   ]
     .filter((line): line is string => line !== undefined)
     .join('\n');
@@ -114,14 +114,14 @@ export function GenerationRuntimeBadge({ detailed = false }: { readonly detailed
       ? [
           compute,
           ...appliedProfile.map((entry) => `${entry.setting} ${entry.value}`),
-          gpuWeightsMiB > 0 ? `GPU weights ${(gpuWeightsMiB / 1024).toFixed(1)} GiB` : '',
+          gpuWeightsMiB > 0 ? `GPU 權重 ${(gpuWeightsMiB / 1024).toFixed(1)} GiB` : '',
         ]
           .filter(Boolean)
           .join(' · ')
       : '';
   const runtimeProfileNotes = (diagnostics?.profile ?? [])
     .filter((entry) => entry.note)
-    .map((entry) => `${entry.setting}: ${entry.applied ? '' : 'skipped, '}${entry.note}`)
+    .map((entry) => `${entry.setting}: ${entry.applied ? '' : '已略過，'}${entry.note}`)
     .join('\n');
   return (
     <div
@@ -132,24 +132,20 @@ export function GenerationRuntimeBadge({ detailed = false }: { readonly detailed
       <span className="runtime-dot" aria-hidden="true" />
       <span className="global-runtime-copy">
         <b>
-          <span>{runtime?.state === 'starting' ? 'llama.cpp · loading' : 'llama.cpp'}</span>
+          <span>{runtime?.state === 'starting' ? 'llama.cpp · 載入中' : 'llama.cpp'}</span>
           <em>{compute}</em>
           <span
             className="runtime-install-help"
             tabIndex={0}
             role="img"
-            aria-label="llama.cpp CPU and GPU install commands"
+            aria-label="llama.cpp CPU 與 GPU 安裝指令"
             title={installTooltip}
           >
             ?
           </span>
         </b>
         <span>
-          {runtime?.model
-            ? shortModel(runtime.model)
-            : runtime
-              ? 'no model loaded'
-              : 'status unavailable'}
+          {runtime?.model ? shortModel(runtime.model) : runtime ? '未載入模型' : '無法取得狀態'}
         </span>
         {detailed && runtime?.detail && <small>{runtime.detail}</small>}
         {detailed && runtimeProfile && (

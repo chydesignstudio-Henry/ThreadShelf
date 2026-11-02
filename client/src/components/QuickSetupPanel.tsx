@@ -44,7 +44,7 @@ export function QuickSetupPanel({ onCompleted }: QuickSetupPanelProps) {
         })
         .catch((cause: unknown) => {
           if (signal?.aborted) return;
-          setError(cause instanceof Error ? cause.message : 'Could not build a setup plan.');
+          setError(cause instanceof Error ? cause.message : '無法建立安裝計畫。');
         })
         .finally(() => {
           if (!signal?.aborted) setLoading(false);
@@ -140,19 +140,19 @@ export function QuickSetupPanel({ onCompleted }: QuickSetupPanelProps) {
         {plan && (
           <>
             <p className="quick-setup-detected">
-              Detected:{' '}
+              偵測到：{' '}
               <b>
-                {plan.hardware.devices[0]?.name ?? 'no accelerator'}
+                {plan.hardware.devices[0]?.name ?? '無加速器'}
                 {plan.hardware.devices[0] ? ` · ${fmtBytes(plan.hardware.modelBudgetBytes)}` : ''}
               </b>{' '}
-              → llama.cpp <b>{plan.runtime.variant}</b> build
+              → llama.cpp <b>{plan.runtime.variant}</b> 版本
             </p>
 
             <ol className="quick-setup-steps">
               <li data-action={plan.runtime.action}>
                 <span className="quick-setup-step-title">
                   llama.cpp {plan.runtime.tag} ({plan.runtime.variant})
-                  {plan.runtime.action === 'reuse' && <em>already installed</em>}
+                  {plan.runtime.action === 'reuse' && <em>已安裝</em>}
                 </span>
                 {plan.runtime.action === 'install' && (
                   <span className="quick-setup-step-meta" title={plan.runtime.url}>
@@ -161,12 +161,8 @@ export function QuickSetupPanel({ onCompleted }: QuickSetupPanelProps) {
                   </span>
                 )}
                 {plan.runtime.companions.map((companion) => (
-                  <span
-                    className="quick-setup-step-meta"
-                    key={companion.url}
-                    title={companion.url}
-                  >
-                    runtime companion · {fmtBytes(companion.sizeBytes)} · sha256{' '}
+                  <span className="quick-setup-step-meta" key={companion.url} title={companion.url}>
+                    執行階段附屬檔 · {fmtBytes(companion.sizeBytes)} · sha256{' '}
                     {shortHash(companion.sha256)}
                   </span>
                 ))}
@@ -177,14 +173,12 @@ export function QuickSetupPanel({ onCompleted }: QuickSetupPanelProps) {
                   <span className="quick-setup-step-title">
                     {plan.model.repoId} · {plan.model.quant}
                     <em>
-                      {plan.model.action === 'reuse'
-                        ? 'already downloaded'
-                        : fmtBytes(plan.model.totalBytes)}
+                      {plan.model.action === 'reuse' ? '已下載' : fmtBytes(plan.model.totalBytes)}
                     </em>
                   </span>
                   <span className="quick-setup-step-meta">
-                    {plan.model.files.length} file{plan.model.files.length === 1 ? '' : 's'} ·
-                    sha256 {shortHash(plan.model.files[0]?.sha256)}
+                    {plan.model.files.length} 個檔案 · sha256{' '}
+                    {shortHash(plan.model.files[0]?.sha256)}
                     {plan.model.license ? ` · ${plan.model.license}` : ''}
                   </span>
                 </li>
@@ -192,7 +186,7 @@ export function QuickSetupPanel({ onCompleted }: QuickSetupPanelProps) {
                 <li data-action="none">
                   <span className="quick-setup-step-title">
                     未自動選擇模型
-                    <em>pick one in the model browser</em>
+                    <em>請在模型瀏覽器中挑選</em>
                   </span>
                 </li>
               )}
@@ -203,7 +197,7 @@ export function QuickSetupPanel({ onCompleted }: QuickSetupPanelProps) {
               {plan.model && (
                 <>
                   {' '}
-                  and <code>{plan.model.directory}</code>
+                  及 <code>{plan.model.directory}</code>
                 </>
               )}
             </p>
@@ -230,10 +224,10 @@ export function QuickSetupPanel({ onCompleted }: QuickSetupPanelProps) {
                 disabled={running || nothingToDo}
               >
                 {running
-                  ? 'Working…'
+                  ? '處理中…'
                   : nothingToDo
-                    ? 'Everything is already installed'
-                    : `Download and install${
+                    ? '全部都已安裝'
+                    : `下載並安裝${
                         plan.totalDownloadBytes ? ` · ${fmtBytes(plan.totalDownloadBytes)}` : ''
                       }`}
               </button>

@@ -31,40 +31,37 @@ const joinDirectories = (directories: readonly string[]): string => directories.
 // Presets are a convenience only — the field accepts any size the server allows.
 const CONTEXT_SIZE_PRESETS = [4096, 8192, 16_384, 32_768, 65_536, 131_072, 262_144] as const;
 const CONTEXT_SIZE_LABELS: Record<number, string> = {
-  4096: '4k · light',
-  8192: '8k · balanced',
+  4096: '4k · 輕量',
+  8192: '8k · 平衡',
   16_384: '16k',
-  32_768: '32k · recommended for 24 GB GPUs',
-  65_536: '64k · long',
-  131_072: '128k · long, slower',
-  262_144: '262k · native for Qwen3.8 · needs Q4 KV on 24 GB',
+  32_768: '32k · 24 GB GPU 建議',
+  65_536: '64k · 長',
+  131_072: '128k · 長、較慢',
+  262_144: '262k · Qwen3.8 原生 · 24 GB 需 Q4 KV',
 };
 // Past 64K, generation slows noticeably as the context fills (RTX 3090 Ti, Gemma 4
 // 26B-A4B: 110 tok/s at 32K, 69 at 128K, 46 at 256K; see docs/PERFORMANCE.md).
 const LONG_CONTEXT_TOKENS = 65_536;
 
 const KV_CACHE_HELP: Record<LlamaKvCacheProfile, string> = {
-  default: 'F16 · llama.cpp default, uses the most KV memory.',
-  quality:
-    'Q8_0 keys and values · near-lossless, about half the KV memory. Turns Flash Attention on.',
-  memory:
-    'Q4_0 keys and values · longest context per GB, small quality cost. Turns Flash Attention on.',
+  default: 'F16 · llama.cpp 預設，KV 記憶體用量最大。',
+  quality: 'Q8_0 鍵與值 · 幾乎無損，KV 記憶體約減半。會開啟 Flash Attention。',
+  memory: 'Q4_0 鍵與值 · 每 GB 可容納最長上下文，品質略降。會開啟 Flash Attention。',
 };
 
 const SPECULATIVE_HELP: Record<LlamaSpeculativeMode, string> = {
-  off: 'No speculative decoding.',
-  auto: "Drafts 2 tokens with the model's own MTP/NextN head when the GGUF has one; otherwise stays off.",
-  aggressive:
-    'Drafts 3 tokens · faster on predictable text, slightly more VRAM. Needs an MTP/NextN head.',
+  off: '不使用推測解碼。',
+  auto: 'GGUF 有 MTP/NextN head 時以其草擬 2 個 token；否則保持關閉。',
+  aggressive: '草擬 3 個 token · 可預測文字更快，VRAM 略增。需要 MTP/NextN head。',
 };
 
 const REASONING_HELP: Record<LlamaReasoningEffort, string> = {
-  default: 'Keeps the chat template default.',
-  off: 'Disables thinking where the chat template supports it.',
-  low: 'Short thinking · fastest answers.',
-  medium: 'Recommended desktop balance of speed and quality.',
-  high: 'Longer thinking.',
-  xhigh: 'Slowest · maximum reasoning, can consume much of the context.',
+  default: '沿用聊天範本預設。',
+  off: '在聊天範本支援時關閉思考。',
+  low: '短思考 · 回答最快。',
+  medium: '建議：桌機速度與品質的平衡。',
+  high: '較長思考。',
+  xhigh: '最慢 · 最大推理，可能占用大量上下文。',
 };
 
 // Like Ollama's keep_alive: how long an unused model stays in memory.
@@ -79,11 +76,11 @@ const IDLE_UNLOAD_PRESETS: readonly { readonly minutes: number; readonly label: 
 ];
 
 const ACCELERATION_HELP: Record<LlamaAccelerationMode, string> = {
-  auto: 'Recommended. llama.cpp fits as many layers as possible to available accelerators, then uses CPU.',
-  cpu: 'CPU only. Most compatible, but usually slower for generation.',
-  gpu: 'Single GPU maximum. Loads all possible model layers on the selected GPU.',
-  hybrid: 'CPU + GPU. Offloads an exact number of layers and keeps the rest on CPU.',
-  'multi-gpu': 'Loads all possible layers and distributes work across multiple GPUs.',
+  auto: '建議。llama.cpp 會把盡量多的層放到可用加速器，其餘用 CPU。',
+  cpu: '僅 CPU。相容性最高，但生成通常較慢。',
+  gpu: '單 GPU 最大化。把所有可放的模型層載入選定 GPU。',
+  hybrid: 'CPU + GPU。卸載指定層數到 GPU，其餘留在 CPU。',
+  'multi-gpu': '載入所有可放的層，並分散到多張 GPU。',
 };
 
 export function GenerationSettings() {
@@ -146,7 +143,7 @@ export function GenerationSettings() {
       .then(applyData)
       .catch((cause: unknown) => {
         if (cause instanceof DOMException && cause.name === 'AbortError') return;
-        setError(cause instanceof Error ? cause.message : 'Could not load generation settings.');
+        setError(cause instanceof Error ? cause.message : '無法載入生成設定。');
       });
     return () => controller.abort();
   }, []);
@@ -157,11 +154,11 @@ export function GenerationSettings() {
 
   const save = async () => {
     if (!contextSizeValid) {
-      setError('Context window must be a whole number from 512 to 1,048,576 tokens.');
+      setError('上下文長度必須是 512 到 1,048,576 之間的整數 tokens。');
       return;
     }
     if (localApi.networkAccess && !isValidNetworkPort(localApi.networkPort)) {
-      setError('Network port must be a whole number from 1 to 65,535.');
+      setError('網路埠必須是 1 到 65,535 之間的整數。');
       return;
     }
     setSaving(true);
@@ -229,7 +226,7 @@ export function GenerationSettings() {
       window.dispatchEvent(new Event('threadshelf:generation-runtime-changed'));
       toast.success('Generation settings saved.');
     } catch (cause) {
-      const message = cause instanceof Error ? cause.message : 'Could not save settings.';
+      const message = cause instanceof Error ? cause.message : '無法儲存設定。';
       setError(message);
       toast.error(message);
     } finally {
@@ -244,7 +241,7 @@ export function GenerationSettings() {
       const response = await api.generationModels('llama-cpp');
       setModels(response.models);
     } catch (cause) {
-      setError(cause instanceof Error ? cause.message : 'Model scan failed.');
+      setError(cause instanceof Error ? cause.message : '模型掃描失敗。');
     }
   };
 
@@ -264,11 +261,7 @@ export function GenerationSettings() {
         <div className="section-h">
           <h2 id="generation-settings-title">對話生成</h2>
         </div>
-        {error ? (
-          <div className="banner err">{error}</div>
-        ) : (
-          <p role="status">正在載入生成設定…</p>
-        )}
+        {error ? <div className="banner err">{error}</div> : <p role="status">正在載入生成設定…</p>}
       </section>
     );
   }
@@ -280,8 +273,8 @@ export function GenerationSettings() {
       </div>
 
       <div className="banner warn">
-        llama.cpp stays local. OpenRouter sends the selected archived conversation and new prompts
-        to OpenRouter and its downstream provider.
+        llama.cpp 完全在本機執行。OpenRouter 會把選取的封存對話與新提示詞傳送給 OpenRouter
+        及其下游供應者。
       </div>
 
       {error && <div className="banner err">{error}</div>}
@@ -292,7 +285,7 @@ export function GenerationSettings() {
 
       <div className="panel generation-panel">
         <div className="panel-head">
-          <h3>llama.cpp wrapper</h3>
+          <h3>llama.cpp 包裝器</h3>
           <span className="sub">local · primary engine</span>
           <button
             type="button"
@@ -304,7 +297,7 @@ export function GenerationSettings() {
         </div>
         <div className="panel-body generation-form">
           <label>
-            <span>llama-server executable</span>
+            <span>llama-server 執行檔</span>
             <input
               value={executablePath}
               onChange={(event) => setExecutablePath(event.target.value)}
@@ -332,8 +325,8 @@ export function GenerationSettings() {
             />
             {data?.config.llamaCpp.defaultModelDirectories.length ? (
               <small>
-                Also scanning {data.config.llamaCpp.defaultModelDirectories.length} default or
-                environment-provided model roots. These are not saved in this field.
+                另外也會掃描 {data.config.llamaCpp.defaultModelDirectories.length}{' '}
+                個預設或環境變數提供的模型根目錄，這些不會存入此欄位。
               </small>
             ) : null}
           </label>
@@ -348,7 +341,7 @@ export function GenerationSettings() {
                 <option value="cpu">僅 CPU</option>
                 <option value="gpu">單 GPU · 最大卸載</option>
                 <option value="hybrid">CPU + GPU · 指定層</option>
-                <option value="multi-gpu">Multi-GPU</option>
+                <option value="multi-gpu">多 GPU</option>
               </select>
               <small>{ACCELERATION_HELP[acceleration]}</small>
             </label>
@@ -368,10 +361,10 @@ export function GenerationSettings() {
                 {contextSizeValid
                   ? `${Number(contextSize).toLocaleString()} tokens${
                       parsedContextSize > LONG_CONTEXT_TOKENS
-                        ? ' · Long context: generation slows as the context fills and the KV cache needs much more VRAM. Use the Memory saver KV cache on 24 GB GPUs.'
+                        ? ' · 長上下文：上下文填滿時生成會變慢，KV 快取也需要更多 VRAM。24 GB GPU 請使用省記憶體 KV 快取。'
                         : ''
                     }`
-                  : 'Enter a whole number from 512 to 1,048,576.'}
+                  : '請輸入 512 到 1,048,576 之間的整數。'}
               </small>
             </label>
             {acceleration === 'hybrid' && (
@@ -429,7 +422,7 @@ export function GenerationSettings() {
                 value={threads}
                 onChange={(event) => setThreads(Number(event.target.value))}
               />
-              <small>-1 lets llama.cpp choose automatically.</small>
+              <small>-1 讓 llama.cpp 自動選擇。</small>
             </label>
             <label>
               <span>Flash Attention</span>
@@ -438,12 +431,12 @@ export function GenerationSettings() {
                 onChange={(event) => setFlashAttention(event.target.value as LlamaFlashAttention)}
               >
                 <option value="auto">自動（建議）</option>
-                <option value="on">On</option>
+                <option value="on">開啟</option>
                 <option value="off">關閉</option>
               </select>
             </label>
             <label>
-              <span>KV cache</span>
+              <span>KV 快取</span>
               <select
                 value={kvCache}
                 onChange={(event) => setKvCache(event.target.value as LlamaKvCacheProfile)}
@@ -490,7 +483,7 @@ export function GenerationSettings() {
                 {IDLE_UNLOAD_PRESETS.some(
                   (preset) => preset.minutes === idleUnloadMinutes,
                 ) ? null : (
-                  <option value={idleUnloadMinutes}>After {idleUnloadMinutes} minutes idle</option>
+                  <option value={idleUnloadMinutes}>閒置 {idleUnloadMinutes} 分鐘後</option>
                 )}
                 {IDLE_UNLOAD_PRESETS.map((preset) => (
                   <option key={preset.minutes} value={preset.minutes}>
@@ -499,19 +492,17 @@ export function GenerationSettings() {
                 ))}
               </select>
               <small>
-                Frees VRAM and RAM when no chat or API request has used the model for a while. The
-                next request loads it again.
+                模型一段時間沒有聊天或 API 請求時，釋放 VRAM 與 RAM；下一個請求會重新載入。
               </small>
             </label>
           </div>
           <div className="setup-note">
-            安全探索： <code>npm run setup:llama</code>. Check latest release:{' '}
-            <code>npm run setup:llama -- -- --check</code>. Nothing downloads until explicit{' '}
-            <code>--install</code> or <code>--url</code> approval.
+            安全探索： <code>npm run setup:llama</code>. 檢查最新版本：{' '}
+            <code>npm run setup:llama -- -- --check</code>. 在明確使用 <code>--install</code> 或{' '}
+            <code>--url</code> 核准前不會下載任何東西。
             <br />
-            GPU profiles require a compatible build. Install explicitly with{' '}
-            <code>--variant cuda</code>, <code>vulkan</code>, <code>rocm</code>, or{' '}
-            <code>sycl</code>; Metal is automatic on supported Macs.
+            GPU 設定檔需要相容的版本。請明確以 <code>--variant cuda</code>、<code>vulkan</code>、
+            <code>rocm</code> 或 <code>sycl</code> 安裝；支援的 Mac 會自動使用 Metal。
           </div>
           <div className="generation-actions">
             <button className="btn primary" onClick={() => setCatalogOpen(true)}>
@@ -520,7 +511,7 @@ export function GenerationSettings() {
             <button className="btn" onClick={() => void scanModels()}>
               掃描 GGUF 模型
             </button>
-            {models && <span>{models.length.toLocaleString()} model files found</span>}
+            {models && <span>{models.length.toLocaleString()} 個模型檔</span>}
           </div>
         </div>
       </div>
@@ -546,14 +537,12 @@ export function GenerationSettings() {
               autoComplete="off"
               value={apiKey}
               onChange={(event) => setApiKey(event.target.value)}
-              placeholder={
-                data?.config.openRouter.apiKeyConfigured ? 'A key is configured' : 'sk-or-v1-…'
-              }
+              placeholder={data?.config.openRouter.apiKeyConfigured ? '已設定金鑰' : 'sk-or-v1-…'}
             />
           </label>
           <p className="sub">
-            A key entered here stays in server-process memory only. A key in the gitignored .env
-            persists across restarts. Neither value is returned by the API.
+            在此輸入的金鑰只保存在伺服器程序記憶體中；寫在已 gitignore 的 .env
+            中的金鑰重啟後仍有效。API 不會回傳任何一者。
           </p>
           <label className="check-field">
             <input
@@ -577,7 +566,7 @@ export function GenerationSettings() {
       <div className="panel generation-panel">
         <div className="panel-head">
           <h3>診斷</h3>
-          <span className="sub">local error log</span>
+          <span className="sub">本機錯誤記錄</span>
         </div>
         <div className="panel-body generation-form">
           <label className="check-field">
@@ -589,19 +578,19 @@ export function GenerationSettings() {
             將生成錯誤存到 .threadshelf/generation-errors.log
           </label>
           <p className="sub">
-            ThreadShelf writes provider/model errors without adding prompts, answers, or reasoning.
-            Private tab-scoped chats are never written, regardless of this setting.
+            ThreadShelf
+            只記錄供應者／模型錯誤，不含提示詞、回答或推理內容。無論此設定為何，分頁範圍的私密聊天都不會被記錄。
           </p>
         </div>
       </div>
 
       <div className="generation-actions">
         <button className="btn primary" disabled={saving} onClick={() => void save()}>
-          {saving ? 'Saving…' : 'Save generation settings'}
+          {saving ? '儲存中…' : '儲存生成設定'}
         </button>
         {data?.providers.map((provider) => (
           <span key={provider.id} className="provider-status" data-ready={provider.available}>
-            {provider.label}: {provider.available ? 'ready' : 'not configured'}
+            {provider.label}: {provider.available ? '就緒' : '未設定'}
           </span>
         ))}
       </div>

@@ -145,10 +145,8 @@ export function LocalApiPanel({
       />
       <div className="panel-body local-api">
         <p className="setup-note">
-          Use your local models from any app that speaks the OpenAI or Anthropic API, the same way
-          you would with LM Studio or Ollama. The model named in a request loads on first use and
-          replaces the one in memory. These requests are not saved to your archive, and the master
-          prompt is not added to them.
+          讓任何支援 OpenAI 或 Anthropic API 的 App 使用你的本機模型，就像使用 LM Studio 或
+          Ollama。請求指定的模型會在首次使用時載入，並取代記憶體中的模型。這些請求不會存入你的封存資料，也不會加上主提示詞。
         </p>
 
         <label className="check-field">
@@ -164,7 +162,7 @@ export function LocalApiPanel({
           <span className="local-api-label">Base URL</span>
           <code className="local-api-value">{baseUrl}</code>
           <button type="button" className="btn sm ghost" onClick={() => copy('url', baseUrl)}>
-            {copied === 'url' ? 'copied' : 'copy'}
+            {copied === 'url' ? '已複製' : '複製'}
           </button>
         </div>
 
@@ -174,7 +172,7 @@ export function LocalApiPanel({
               <span className="local-api-label">網路 URL</span>
               <code className="local-api-value">{url}</code>
               <button type="button" className="btn sm ghost" onClick={() => copy(url, url)}>
-                {copied === url ? 'copied' : 'copy'}
+                {copied === url ? '已複製' : '複製'}
               </button>
             </div>
           ))}
@@ -192,18 +190,17 @@ export function LocalApiPanel({
               {models.map((candidate) => (
                 <option key={candidate.id} value={candidate.id}>
                   {candidate.id}
-                  {candidate.loaded ? ' · loaded' : ''}
+                  {candidate.loaded ? ' · 已載入' : ''}
                 </option>
               ))}
             </select>
           ) : (
             <span className="local-api-value muted">
               {isLoading
-                ? 'Loading models…'
+                ? '正在載入模型…'
                 : error
                   ? error.message
-                  : (status?.modelsError ??
-                    'No GGUF models found yet. Download one or add a model directory.')}
+                  : (status?.modelsError ?? '尚未找到 GGUF 模型。請下載模型或新增模型資料夾。')}
             </span>
           )}
           <button
@@ -212,7 +209,7 @@ export function LocalApiPanel({
             disabled={!models?.length}
             onClick={() => copy('model', model)}
           >
-            {copied === 'model' ? 'copied' : 'copy'}
+            {copied === 'model' ? '已複製' : '複製'}
           </button>
         </div>
 
@@ -229,10 +226,10 @@ export function LocalApiPanel({
                 onChange={(event) => onChange({ apiKey: event.target.value, clearApiKey: false })}
                 placeholder={
                   config?.apiKeySource === 'env'
-                    ? 'Set by THREADSHELF_API_KEY'
+                    ? '由 THREADSHELF_API_KEY 設定'
                     : config?.apiKeyConfigured
-                      ? 'A key is configured · type to replace it'
-                      : 'Empty · no key required'
+                      ? '已設定金鑰 · 輸入以取代'
+                      : '空白 · 不需金鑰'
                 }
               />
               {config?.apiKeySource !== 'env' && (
@@ -250,14 +247,14 @@ export function LocalApiPanel({
                   className="btn sm ghost"
                   onClick={() => copy('key', draft.apiKey)}
                 >
-                  {copied === 'key' ? 'copied' : 'copy'}
+                  {copied === 'key' ? '已複製' : '複製'}
                 </button>
               )}
             </div>
             <small>
               {keyRequired
-                ? 'Requests must send the key as "Authorization: Bearer <key>" or "x-api-key". Copy a new key before saving: it is not shown again.'
-                : 'No key: any program on this computer can use the API, as with LM Studio and Ollama. Set one if a client insists on a key or other devices connect.'}
+                ? '請求必須以「Authorization: Bearer <key>」或「x-api-key」送出金鑰。儲存前請先複製新金鑰：之後不會再顯示。'
+                : '無金鑰：這台電腦上任何程式都能使用 API，與 LM Studio、Ollama 相同。若用戶端堅持要金鑰或有其他裝置連線，請設定一組。'}
             </small>
           </label>
           {config?.apiKeySource === 'settings' && !draft.apiKey && (
@@ -291,9 +288,8 @@ export function LocalApiPanel({
                 onChange={(event) => onChange({ networkPort: event.target.value })}
               />
               <small>
-                Other devices connect to this port, which serves only /v1. Your archive and settings
-                stay reachable from this computer only.
-                {!keyRequired && ' Without a key, anyone on your network can use your models.'}
+                其他裝置透過此連接埠連線，僅提供 /v1。你的封存資料與設定只能從這台電腦存取。
+                {!keyRequired && ' 沒有金鑰時，網路上任何人都能使用你的模型。'}
               </small>
             </label>
           )}
@@ -324,7 +320,7 @@ export function LocalApiPanel({
           <pre>
             <code>{code}</code>
             <button type="button" className="btn sm ghost" onClick={() => copy('code', code)}>
-              {copied === 'code' ? 'copied' : 'copy'}
+              {copied === 'code' ? '已複製' : '複製'}
             </button>
           </pre>
         </div>

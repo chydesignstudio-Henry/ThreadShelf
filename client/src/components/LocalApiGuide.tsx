@@ -44,7 +44,7 @@ function Snippet({ code }: { readonly code: string }) {
           setTimeout(() => setCopied(false), 1400);
         }}
       >
-        {copied ? 'copied' : 'copy'}
+        {copied ? '已複製' : '複製'}
       </button>
     </pre>
   );
@@ -69,10 +69,10 @@ function StatusRow({
 }
 
 const idleText = (minutes: number | undefined): string => {
-  if (!minutes) return 'Never. A loaded model stays in memory until another model or Eject.';
-  if (minutes % 1440 === 0) return `After ${minutes / 1440} day(s) without requests.`;
-  if (minutes % 60 === 0) return `After ${minutes / 60} hour(s) without requests.`;
-  return `After ${minutes} minutes without requests.`;
+  if (!minutes) return '永不。已載入的模型會留在記憶體，直到換模型或按「退出」。';
+  if (minutes % 1440 === 0) return `${minutes / 1440} 天無請求後。`;
+  if (minutes % 60 === 0) return `${minutes / 60} 小時無請求後。`;
+  return `${minutes} 分鐘無請求後。`;
 };
 
 /** Environment variables differ only in syntax between shells. */
@@ -104,10 +104,7 @@ function ConnectInstructions({
         <>
           <ol className="guide-steps">
             <li>請載入長上下文模型：至少 32K，agent 用 64K 更好。</li>
-            <li>
-              Run these lines in the terminal where you start Claude Code. They last until you close
-              the terminal.
-            </li>
+            <li>在啟動 Claude Code 的終端機執行以下指令；關閉終端機後即失效。</li>
           </ol>
           <Snippet
             code={`${envLines(shell, [
@@ -119,17 +116,17 @@ function ConnectInstructions({
           />
           <ul className="guide-notes">
             <li>
-              Base URL 包含 <b>no</b> <code>/v1</code>: Claude Code adds it and calls{' '}
-              <code>/v1/messages</code>.
+              Base URL <b>不要</b>包含 <code>/v1</code>：Claude Code 會自動加上並呼叫{' '}
+              <code>/v1/messages</code>。
             </li>
             <li>
-              兩個模型變數都使用 <b>same</b> id. ThreadShelf keeps one model in memory, so
-              a second model for background tasks would reload models all the time.
+              兩個模型變數都使用<b>相同</b>的 id。ThreadShelf
+              一次只在記憶體保留一個模型，若背景任務用第二個模型，會一直重新載入。
             </li>
             <li>
               {keyRequired
-                ? 'Use your ThreadShelf API key as the token.'
-                : 'No key is set in ThreadShelf, so any token works.'}
+                ? '請用你的 ThreadShelf API 金鑰當作 token。'
+                : 'ThreadShelf 未設定金鑰，任何 token 都可以。'}
             </li>
           </ul>
         </>
@@ -139,8 +136,8 @@ function ConnectInstructions({
         <>
           <ol className="guide-steps">
             <li>
-              開啟 <code>~/.codex/config.toml</code> (on Windows{' '}
-              <code>%USERPROFILE%\.codex\config.toml</code>) and add:
+              開啟 <code>~/.codex/config.toml</code> （Windows 為{' '}
+              <code>%USERPROFILE%\.codex\config.toml</code>），並加入：
             </li>
           </ol>
           <Snippet
@@ -162,8 +159,8 @@ wire_api = "responses"${keyRequired ? '\nenv_key = "THREADSHELF_API_KEY"' : ''}`
           )}
           <ul className="guide-notes">
             <li>
-              <code>wire_api = "responses"</code> is required: current Codex versions refuse to
-              start with <code>"chat"</code>. ThreadShelf serves <code>/v1/responses</code>.
+              <code>wire_api = "responses"</code> 為必填：目前的 Codex 版本使用 <code>"chat"</code>{' '}
+              會拒絕啟動。ThreadShelf 提供 <code>/v1/responses</code>。
             </li>
             <li>Codex 是 agent：請給模型 32K 以上的上下文。</li>
           </ul>
@@ -174,8 +171,8 @@ wire_api = "responses"${keyRequired ? '\nenv_key = "THREADSHELF_API_KEY"' : ''}`
         <>
           <ol className="guide-steps">
             <li>
-              在 DeepSeek Harness 開啟 <b>設定 → 模型 → 新增自訂供應者</b> and enter
-              the values below. Or add the same block to <code>$DSH_HOME/settings.yaml</code>:
+              在 DeepSeek Harness 開啟 <b>設定 → 模型 → 新增自訂供應者</b>
+              ，填入以下值；或把同樣的區塊加到 <code>$DSH_HOME/settings.yaml</code>：
             </li>
           </ol>
           <Snippet
@@ -191,8 +188,8 @@ wire_api = "responses"${keyRequired ? '\nenv_key = "THREADSHELF_API_KEY"' : ''}`
           />
           <ol className="guide-steps" start={2}>
             <li>
-              The harness reads the key from an environment variable, so set it even when
-              ThreadShelf has no key, then start the harness from that terminal:
+              Harness 從環境變數讀取金鑰，即使 ThreadShelf 沒設金鑰也要設定，然後在該終端機啟動
+              harness：
             </li>
           </ol>
           <Snippet
@@ -200,12 +197,11 @@ wire_api = "responses"${keyRequired ? '\nenv_key = "THREADSHELF_API_KEY"' : ''}`
           />
           <ul className="guide-notes">
             <li>
-              選擇 <b>ThreadShelf</b> and the model in the session's model picker.
+              選擇 <b>ThreadShelf</b>，並在工作階段的模型選單選擇模型。
             </li>
             <li>
-              If your harness version names the fields differently, the values are: base URL{' '}
-              <code>{origin}/v1</code>, protocol OpenAI-compatible (chat completions), model id{' '}
-              <code>{model}</code>.
+              若你的 harness 版本欄位名稱不同，對應值為：base URL <code>{origin}/v1</code>、協定
+              OpenAI 相容（chat completions）、模型 id <code>{model}</code>。
             </li>
           </ul>
         </>
@@ -214,29 +210,27 @@ wire_api = "responses"${keyRequired ? '\nenv_key = "THREADSHELF_API_KEY"' : ''}`
       return (
         <>
           <p className="guide-text">
-            選擇 App 的 <b>相容 OpenAI</b> (or "custom OpenAI") provider, not an Ollama
-            preset, and fill in:
+            選擇 App 的 <b>相容 OpenAI</b> （或「自訂 OpenAI」）供應者，不要選 Ollama 預設，並填入：
           </p>
           <div className="guide-fields">
             <span>Base URL</span>
             <code>{origin}/v1</code>
             <span>API 金鑰</span>
-            <code>{keyRequired ? 'your ThreadShelf key' : 'anything, e.g. threadshelf'}</code>
+            <code>{keyRequired ? '你的 ThreadShelf 金鑰' : '任意值，例如 threadshelf'}</code>
             <span>模型</span>
             <code>{model}</code>
           </div>
           <p className="guide-text">
-            Apps built on the Anthropic SDK use the base URL <code>{origin}</code>, without{' '}
-            <code>/v1</code>.
+            以 Anthropic SDK 開發的 App 使用 base URL <code>{origin}</code>，不含 <code>/v1</code>。
           </p>
           <ul className="guide-notes">
             <li>
-              An app in Docker, a VM or on another device cannot reach this address. Turn on{' '}
-              <b>在區域網路提供服務</b> and use the network URL instead.
+              Docker、虛擬機或其他裝置上的 App 無法連到此位址。請開啟 <b>在區域網路提供服務</b>
+              ，改用網路 URL。
             </li>
             <li>
-              A "connection refused" error means ThreadShelf is not running; 401 means the key is
-              wrong; 403 means the app is not on this computer (or the API is off).
+              「connection refused」表示 ThreadShelf 未執行；401 表示金鑰錯誤；403 表示 App
+              不在這台電腦上（或 API 已關閉）。
             </li>
           </ul>
         </>
@@ -253,87 +247,87 @@ const SETTINGS_HELP: readonly {
   }[];
 }[] = [
   {
-    group: 'Local model API',
+    group: '本機模型 API',
     items: [
       {
-        name: 'Serve the local model API',
-        what: 'Lets other programs on this computer use your models through the /v1 address, like LM Studio or Ollama.',
-        pick: 'Leave on. Turn off if you never use other apps with ThreadShelf models.',
+        name: '提供本機模型 API',
+        what: '讓這台電腦上的其他程式透過 /v1 位址使用你的模型，就像 LM Studio 或 Ollama。',
+        pick: '保持開啟。若從不讓其他 App 使用 ThreadShelf 模型再關閉。',
       },
       {
-        name: 'API key',
-        what: 'A password other apps must send. Empty means no password: any program on this computer may use the models.',
-        pick: 'Leave empty for use on this computer. Set one (Generate) when an app insists on a key or other devices connect.',
+        name: 'API 金鑰',
+        what: '其他 App 必須送出的密碼。留空表示不需密碼：這台電腦上任何程式都能使用模型。',
+        pick: '只在本機使用就留空。App 堅持要金鑰或有其他裝置連線時，再設定一組（產生）。',
       },
       {
-        name: 'Serve on the local network',
-        what: 'Opens a second port so phones, laptops or Docker containers can use your models. Only the model API is shared, never your archive.',
-        pick: 'Off unless another device needs it. When on, also set an API key.',
+        name: '在區域網路提供服務',
+        what: '開啟第二個連接埠，讓手機、筆電或 Docker 容器使用你的模型。只分享模型 API，絕不分享你的封存資料。',
+        pick: '除非其他裝置需要，否則關閉。開啟時也請設定 API 金鑰。',
       },
       {
-        name: 'Network port',
-        what: 'The port other devices connect to, e.g. http://192.168.1.50:3001/v1.',
-        pick: '3001, unless something else already uses it.',
+        name: '網路埠',
+        what: '其他裝置連線的連接埠，例如 http://192.168.1.50:3001/v1。',
+        pick: '3001，除非已被其他程式使用。',
       },
     ],
   },
   {
-    group: 'Memory',
+    group: '記憶體',
     items: [
       {
-        name: 'Unload model from memory',
-        what: 'Frees the GPU memory (VRAM) once nobody has used the model for this long. The next message loads it again, which takes a few seconds to a minute.',
-        pick: 'Never if the computer is only for AI. 15–30 minutes if you also game or edit video on the same GPU.',
+        name: '從記憶體卸載模型',
+        what: '模型閒置達此時間後釋放 GPU 記憶體（VRAM）。下一則訊息會重新載入，約需數秒到一分鐘。',
+        pick: '電腦只跑 AI 就選「永不」。同一張 GPU 也用來玩遊戲或剪片，選 15–30 分鐘。',
       },
       {
-        name: 'Eject',
-        what: 'Unloads the model right now. Same as POST /v1/models/unload.',
-        pick: 'Use before starting a game or another GPU-heavy program.',
+        name: '退出',
+        what: '立即卸載模型，等同 POST /v1/models/unload。',
+        pick: '在啟動遊戲或其他吃 GPU 的程式前使用。',
       },
     ],
   },
   {
-    group: 'llama.cpp model settings',
+    group: 'llama.cpp 模型設定',
     items: [
       {
-        name: 'Context window',
-        what: 'How much text the model can keep in mind at once: the conversation, files an agent reads, and the answer. Bigger needs more VRAM and gets slower as it fills.',
-        pick: '32K on a 24 GB GPU. 64K for coding agents (with the Memory saver KV cache). 8–16K on smaller GPUs.',
+        name: '上下文長度',
+        what: '模型一次能記住的文字量：對話、agent 讀取的檔案與回答。越大需要越多 VRAM，填滿時也越慢。',
+        pick: '24 GB GPU 用 32K；coding agent 用 64K（搭配省記憶體 KV 快取）；較小的 GPU 用 8–16K。',
       },
       {
-        name: 'KV cache',
-        what: 'How precisely that context is stored. Q8 is near lossless; Q4 uses half the memory so a longer context fits.',
-        pick: 'Quality · Q8. Memory saver · Q4 for 64K and more.',
+        name: 'KV 快取',
+        what: '上下文儲存的精度。Q8 幾乎無損；Q4 記憶體減半，可容納更長上下文。',
+        pick: '品質 · Q8；64K 以上用省記憶體 · Q4。',
       },
       {
-        name: 'Acceleration profile',
-        what: 'Where the model runs. Layers that do not fit on the GPU run on the much slower CPU.',
-        pick: 'Auto-fit. Change only if the runtime log shows a problem.',
+        name: '加速設定檔',
+        what: '模型在哪裡執行。放不進 GPU 的層會在慢很多的 CPU 上執行。',
+        pick: '自動配置。只有執行記錄顯示問題時才更改。',
       },
       {
         name: 'Flash Attention',
-        what: 'A faster way to compute attention that also saves memory. Needed for the Q8/Q4 KV cache.',
-        pick: 'Auto.',
+        what: '更快且省記憶體的 attention 計算方式。Q8/Q4 KV 快取需要它。',
+        pick: '自動。',
       },
       {
-        name: 'Speculative decoding (MTP)',
-        what: 'Lets the model guess a few words ahead with its own built-in helper and check them in one step. Same answers, faster. Only models with an MTP head (e.g. Qwen 3.8) use it.',
-        pick: 'Auto · draft 2. In tests Qwen 3.8 went from 44 to 72–76 tokens per second; it turns itself off for models without an MTP head.',
+        name: '推測解碼（MTP）',
+        what: '讓模型用內建輔助頭先猜幾個字，再一次驗證。答案相同但更快。只有具 MTP head 的模型（如 Qwen 3.8）會使用。',
+        pick: '自動 · 草稿 2。測試中 Qwen 3.8 從每秒 44 提升到 72–76 tokens；沒有 MTP head 的模型會自動關閉。',
       },
       {
-        name: 'Reasoning effort',
-        what: 'How long thinking models think before answering. Thinking is written text too, so it takes time.',
-        pick: 'Medium. Low or Off for quick questions.',
+        name: '推理強度',
+        what: '思考型模型回答前思考多久。思考也是產生文字，因此需要時間。',
+        pick: '中。快速問題用低或關閉。',
       },
       {
-        name: 'CPU threads',
-        what: 'CPU cores used for the parts that run on the CPU.',
-        pick: '-1 (automatic).',
+        name: 'CPU 執行緒',
+        what: '在 CPU 上執行的部分所使用的核心數。',
+        pick: '-1（自動）。',
       },
       {
-        name: 'Existing local server URL',
-        what: 'Use a llama-server you started yourself instead of the one ThreadShelf manages, e.g. for a draft model or vision.',
-        pick: 'Empty, unless you know you need it.',
+        name: '既有本機伺服器 URL',
+        what: '使用你自行啟動的 llama-server，而非 ThreadShelf 管理的那個，例如用於草稿模型或視覺。',
+        pick: '留空，除非你確定需要。',
       },
     ],
   },
@@ -413,20 +407,20 @@ export function LocalApiGuide({ tab, onTab, config, model: chosenModel }: GuideP
               <div className="guide-status">
                 <StatusRow label="API" ok={enabled}>
                   {enabled
-                    ? `On at ${origin}/v1`
-                    : 'Off. Apps get "403 api_disabled". Turn it on in Local model API.'}
+                    ? `已開啟：${origin}/v1`
+                    : '已關閉。App 會收到「403 api_disabled」。請在「本機模型 API」開啟。'}
                 </StatusRow>
                 <StatusRow label="誰可以使用" ok={null}>
                   {network?.state === 'listening'
-                    ? `This computer, and other devices at ${network.urls.join(', ') || `port ${network.port}`}`
-                    : 'Only programs on this computer.'}
+                    ? `這台電腦，以及透過 ${network.urls.join(', ') || `連接埠 ${network.port}`} 連線的其他裝置`
+                    : '只有這台電腦上的程式。'}
                 </StatusRow>
                 <StatusRow label="API 金鑰" ok={null}>
                   {api?.apiKeySource === 'env'
-                    ? 'Required. Set by THREADSHELF_API_KEY.'
+                    ? '必填，由 THREADSHELF_API_KEY 設定。'
                     : keyRequired
-                      ? 'Required. Apps must send the key you saved.'
-                      : 'Not required. Apps may send any key, or none.'}
+                      ? '必填，App 必須送出你儲存的金鑰。'
+                      : '非必填，App 可送任意金鑰或不送。'}
                 </StatusRow>
                 {network?.state === 'error' && (
                   <StatusRow label="網路埠" ok={false}>
@@ -435,16 +429,16 @@ export function LocalApiGuide({ tab, onTab, config, model: chosenModel }: GuideP
                 )}
                 <StatusRow label="記憶體中的模型" ok={null}>
                   {loaded
-                    ? `${loaded.id}. Requests for it answer right away.`
-                    : 'None. The first request loads the model it names.'}
+                    ? `${loaded.id}，對它的請求會立即回應。`
+                    : '無。第一個請求會載入它指定的模型。'}
                 </StatusRow>
                 <StatusRow label="閒置時卸載" ok={null}>
                   {idleText(config?.llamaCpp.idleUnloadMinutes)}
                 </StatusRow>
                 <StatusRow label="引擎" ok={null}>
                   {external
-                    ? `Your own llama-server at ${external}.`
-                    : 'llama.cpp managed by ThreadShelf, one model at a time.'}
+                    ? `你自己的 llama-server：${external}。`
+                    : '由 ThreadShelf 管理的 llama.cpp，一次一個模型。'}
                 </StatusRow>
                 <StatusRow label="可用模型" ok={models.length > 0}>
                   {models.length > 0
@@ -452,7 +446,7 @@ export function LocalApiGuide({ tab, onTab, config, model: chosenModel }: GuideP
                         .slice(0, 4)
                         .map((entry) => entry.id)
                         .join(', ')}${models.length > 4 ? ', …' : ''}`
-                    : (status?.modelsError ?? 'None yet. Download one in Settings.')}
+                    : (status?.modelsError ?? '尚無，請到設定下載。')}
                 </StatusRow>
               </div>
 
@@ -498,14 +492,14 @@ export function LocalApiGuide({ tab, onTab, config, model: chosenModel }: GuideP
                 </tbody>
               </table>
               <p className="guide-text">
-                Streaming, tool calls and JSON output work as llama.cpp supports them. Not
-                available: embeddings, images, audio and Ollama's own <code>/api</code> routes.
-                Requests from apps are never saved to your archive.
+                串流、工具呼叫與 JSON 輸出依 llama.cpp
+                支援程度運作。不支援：embeddings、圖片、音訊，以及 Ollama 自有的 <code>/api</code>{' '}
+                路由。 App 的請求絕不會存入你的封存資料。
               </p>
               <p className="guide-text">
-                <b>一次一個模型。</b> Asking for another model swaps it in, freeing the old
-                one's memory first. While one model is answering, a request for a different model
-                gets "503 model_busy" and apps retry.
+                <b>一次一個模型。</b>{' '}
+                要求其他模型時會先釋放舊模型的記憶體再換上。某模型回答期間，請求不同模型會收到「503
+                model_busy」，App 會重試。
               </p>
             </>
           )}
@@ -544,13 +538,11 @@ export function LocalApiGuide({ tab, onTab, config, model: chosenModel }: GuideP
                   </div>
                 )}
               </div>
-              {!enabled && (
-                <div className="banner warn">API 已關閉，請先開啟再連接。</div>
-              )}
+              {!enabled && <div className="banner warn">API 已關閉，請先開啟再連接。</div>}
               <p className="guide-text">
                 填入 <code>{model}</code>
-                {loaded?.id === model ? ' (loaded now)' : ''}. Pick another model id in the Local
-                model API panel to change the examples.
+                {loaded?.id === model ? '（目前已載入）' : ''}。在「本機模型 API」面板選擇其他模型
+                id 可更換範例。
               </p>
               <ConnectInstructions
                 client={client}
@@ -573,7 +565,7 @@ export function LocalApiGuide({ tab, onTab, config, model: chosenModel }: GuideP
                       <dt>{item.name}</dt>
                       <dd>
                         {item.what}
-                        <span className="guide-pick">If unsure: {item.pick}</span>
+                        <span className="guide-pick">不確定時：{item.pick}</span>
                       </dd>
                     </div>
                   ))}

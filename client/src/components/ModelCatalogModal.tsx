@@ -24,17 +24,17 @@ const SORTS: readonly { readonly value: CatalogSort; readonly label: string }[] 
 ];
 
 const FIT_LABEL: Record<CatalogFit, string> = {
-  fits: 'fits in VRAM',
-  tight: 'partly on CPU',
-  'too-large': 'too large',
+  fits: '可放入 VRAM',
+  tight: '部分在 CPU',
+  'too-large': '太大',
 };
 
 const hardwareSummary = (hardware: HardwareProfile | null): string => {
-  if (!hardware) return 'detecting hardware…';
+  if (!hardware) return '正在偵測硬體…';
   const device = hardware.devices[0];
   return device
-    ? `${device.name} · ${fmtBytes(hardware.modelBudgetBytes)} usable`
-    : `CPU only · ${fmtBytes(hardware.modelBudgetBytes)} usable RAM`;
+    ? `${device.name} · ${fmtBytes(hardware.modelBudgetBytes)} 可用`
+    : `僅 CPU · ${fmtBytes(hardware.modelBudgetBytes)} 可用 RAM`;
 };
 
 export function ModelCatalogModal({ open, onClose, onDownloaded }: ModelCatalogModalProps) {
@@ -72,7 +72,7 @@ export function ModelCatalogModal({ open, onClose, onDownloaded }: ModelCatalogM
           })
           .catch((cause: unknown) => {
             if (controller.signal.aborted) return;
-            setError(cause instanceof Error ? cause.message : 'Could not reach the model catalog.');
+            setError(cause instanceof Error ? cause.message : '無法連線到模型目錄。');
           })
           .finally(() => {
             if (!controller.signal.aborted) setLoading(false);
@@ -110,7 +110,7 @@ export function ModelCatalogModal({ open, onClose, onDownloaded }: ModelCatalogM
           setHardware(response.hardware);
         })
         .catch((cause: unknown) =>
-          toast.error(cause instanceof Error ? cause.message : 'Could not load model files.'),
+          toast.error(cause instanceof Error ? cause.message : '無法載入模型檔案。'),
         )
         .finally(() => setDetailLoading(false));
     },
@@ -139,11 +139,11 @@ export function ModelCatalogModal({ open, onClose, onDownloaded }: ModelCatalogM
           },
           controller.signal,
         );
-        toast.success(`Downloaded ${repoId} (${quant}).`);
+        toast.success(`已下載 ${repoId}（${quant}）。`);
         if (saved) onDownloaded?.(saved);
       } catch (cause) {
         if (!controller.signal.aborted) {
-          toast.error(cause instanceof Error ? cause.message : 'Download failed.');
+          toast.error(cause instanceof Error ? cause.message : '下載失敗。');
         }
       } finally {
         setDownloading(null);
@@ -169,8 +169,8 @@ export function ModelCatalogModal({ open, onClose, onDownloaded }: ModelCatalogM
           <div>
             <h3>下載模型</h3>
             <p>
-              GGUF models from the Hugging Face Hub, matched against your hardware. Only search
-              terms leave this machine — no chat content is ever sent.
+              來自 Hugging Face Hub 的 GGUF
+              模型，並依你的硬體比對。只有搜尋關鍵字會離開這台電腦，絕不傳送任何聊天內容。
             </p>
           </div>
           <span className="catalog-origin" title="目錄資訊取自 huggingface.co">
@@ -257,8 +257,8 @@ export function ModelCatalogModal({ open, onClose, onDownloaded }: ModelCatalogM
                     {detailLoading && <p className="catalog-empty">正在讀取檔案…</p>}
                     {detail && detail.gated !== false && (
                       <p className="catalog-gated-note">
-                        {detail.id} is gated. Accept the licence on Hugging Face, then set{' '}
-                        <code>HF_TOKEN</code> in the server <code>.env</code> to download it here.
+                        {detail.id} 需要授權。請先在 Hugging Face 接受授權條款，再於伺服器的{' '}
+                        <code>.env</code> 設定 <code>HF_TOKEN</code>，即可在此下載。
                       </p>
                     )}
                     {Boolean(detail?.projectors.length) && (
@@ -269,8 +269,7 @@ export function ModelCatalogModal({ open, onClose, onDownloaded }: ModelCatalogM
                           disabled={Boolean(downloading)}
                           onChange={(event) => setIncludeProjector(event.target.checked)}
                         />
-                        Include vision projector (one file, F16 when available; extra download and
-                        memory)
+                        包含視覺投影器（單一檔案，有 F16 時使用；需額外下載與記憶體）
                       </label>
                     )}
                     {detail?.quants.map((quant) => {
@@ -292,9 +291,9 @@ export function ModelCatalogModal({ open, onClose, onDownloaded }: ModelCatalogM
                             className="btn"
                             disabled={busy || Boolean(downloading) || blocked}
                             onClick={() => void download(detail.id, quant.label)}
-                            title={blocked ? 'Gated repository — HF_TOKEN required' : undefined}
+                            title={blocked ? '需授權的儲存庫：需要 HF_TOKEN' : undefined}
                           >
-                            {busy ? `${percent}%` : 'Download'}
+                            {busy ? `${percent}%` : '下載'}
                           </button>
                         </div>
                       );
@@ -336,7 +335,7 @@ const busyBar = (
         <div className="catalog-progress-fill" style={{ width: `${percent}%` }} />
       </div>
       <span title={file}>
-        {percent}% · {file || 'starting…'}
+        {percent}% · {file || '開始中…'}
       </span>
     </div>
   );

@@ -55,7 +55,7 @@ function CopyBtn({ text }: { readonly text: string }) {
   };
   return (
     <button className="copy-turn" onClick={handleCopy}>
-      {copied ? 'copied' : 'copy'}
+      {copied ? '已複製' : '複製'}
     </button>
   );
 }

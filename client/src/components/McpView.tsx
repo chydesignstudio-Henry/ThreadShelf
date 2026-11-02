@@ -35,25 +35,23 @@ export function McpView() {
       <div className="banner info">
         <span className="ico">{Icons.info}</span>
         <div className="grow">
-          已連接的 Obsidian 筆記庫也提供 <code>obsidian_search</code>,{' '}
-          <code>obsidian_read</code>, <code>obsidian_create</code> and <code>obsidian_edit</code>.
-          The vault is read-only until <b>允許寫入筆記庫</b> is enabled in Settings. Deletion
-          requires explicit confirmation in ThreadShelf chat.
+          已連接的 Obsidian 筆記庫也提供 <code>obsidian_search</code>、 <code>obsidian_read</code>、
+          <code>obsidian_create</code> 與 <code>obsidian_edit</code>。 在設定中開啟
+          <b>允許寫入筆記庫</b>之前，筆記庫為唯讀。刪除需在 ThreadShelf 聊天中明確確認。
         </div>
       </div>
 
       <div className="banner info">
         <span className="ico">{Icons.info}</span>
         <div className="grow">
-          MCP runs over stdio against your local LanceDB — no port, no auth surface. Stop the
-          process to revoke access.
+          MCP 透過 stdio 存取你本機的 LanceDB，不開連接埠、沒有驗證介面。停止該程序即可撤銷存取。
         </div>
       </div>
 
       <div className="panel">
         <div className="panel-head">
           <h3>啟動伺服器</h3>
-          <span className="sub">run from project root</span>
+          <span className="sub">在專案根目錄執行</span>
         </div>
         <div className="panel-body">
           <pre
@@ -74,7 +72,7 @@ export function McpView() {
               style={{ position: 'absolute', top: 6, right: 6 }}
               onClick={() => copy('cmd', MCP_COMMAND)}
             >
-              {copied === 'cmd' ? 'copied' : 'copy'}
+              {copied === 'cmd' ? '已複製' : '複製'}
             </button>
           </pre>
         </div>
@@ -104,7 +102,7 @@ export function McpView() {
               style={{ position: 'absolute', top: 6, right: 6 }}
               onClick={() => copy('cfg', MCP_CONFIG)}
             >
-              {copied === 'cfg' ? 'copied' : 'copy'}
+              {copied === 'cfg' ? '已複製' : '複製'}
             </button>
           </pre>
         </div>
