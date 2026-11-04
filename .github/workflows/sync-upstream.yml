@@ -1,0 +1,154 @@
+name: 同步上游
+
+# 將本 fork 的預設分支與上游預設分支保持同步。
+# 每天 03:00（亞洲／台北，UTC+8，無日光節約）= 19:00 UTC。
+# GitHub 的排程以 UTC 計算，尖峰時可能稍晚數分鐘到數十分鐘。
+# 只呼叫 merge-upstream API（快轉或建立合併提交）。
+# 衝突時 GitHub 回 409。此工作流程到此停止：沒有 git push，也沒有 force-push。
+
+on:
+  schedule:
+    - cron: '0 19 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: sync-upstream
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    name: 以 merge-upstream 同步預設分支
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: 同步 fork 與上游
+        uses: actions/github-script@v9
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const { data: info } = await github.rest.repos.get({ owner, repo });
+            const parent = info.parent;
+
+            if (!info.fork || !parent) {
+              throw new Error(
+                `${owner}/${repo} 不是帶有上游的 fork，無法使用 merge-upstream。沒有改走 force-push。`
+              );
+            }
+
+            const branch = info.default_branch;
+            const parentLogin =
+              (parent.owner && (parent.owner.login || parent.owner.name)) ||
+              "unknown";
+            const parentFull = `${parentLogin}/${parent.name}`;
+            const parentBranch = parent.default_branch;
+            const parentUrl = parent.html_url;
+
+            core.info(
+              `準備以 merge-upstream 同步 ${owner}/${repo}@${branch} ← ${parentFull}@${parentBranch}。不會 force-push。`
+            );
+
+            const fail = async (title, detail) => {
+              await core.summary
+                .addHeading("上游同步失敗")
+                .addRaw(`${title}\n\n${detail}\n\n沒有 force-push。\n`)
+                .write();
+              throw new Error(`${title} ${detail} 沒有 force-push。`);
+            };
+
+            let synced;
+            try {
+              const response = await github.rest.repos.mergeUpstream({
+                owner,
+                repo,
+                branch,
+              });
+              synced = response.data;
+            } catch (error) {
+              const status = error.status ?? error.response?.status;
+              const apiMessage =
+                error.response?.data?.message || error.message || String(error);
+
+              if (status !== 409) {
+                await fail(
+                  "merge-upstream 失敗。",
+                  `HTTP ${status ?? "unknown"}：${apiMessage}。`
+                );
+              }
+
+              const title = `上游同步衝突：無法將 ${parentFull}@${parentBranch} 合併進 ${branch}`;
+              let issueNote =
+                "此儲存庫未啟用 Issues，因此只讓這次執行失敗，沒有開 issue。";
+
+              if (info.has_issues) {
+                const marker = "<!-- threadshelf-upstream-sync-conflict -->";
+                try {
+                  const openIssues = await github.paginate(
+                    github.rest.issues.listForRepo,
+                    {
+                      owner,
+                      repo,
+                      state: "open",
+                      per_page: 100,
+                    }
+                  );
+                  const existing = openIssues.find(
+                    (issue) =>
+                      !issue.pull_request && (issue.body || "").includes(marker)
+                  );
+                  if (existing) {
+                    issueNote = `已有開啟中的衝突 issue：${existing.html_url}`;
+                    core.warning(issueNote);
+                  } else {
+                    const runUrl = `${context.serverUrl}/${owner}/${repo}/actions/runs/${context.runId}`;
+                    const { data: created } = await github.rest.issues.create({
+                      owner,
+                      repo,
+                      title,
+                      body: [
+                        marker,
+                        "",
+                        `自動同步失敗：將上游 [${parentFull}](${parentUrl}) 的預設分支 \`${parentBranch}\` 合併到本 fork \`${owner}/${repo}\` 的預設分支 \`${branch}\` 時發生衝突。`,
+                        "",
+                        `GitHub API：\`${apiMessage}\`（HTTP 409）。`,
+                        "",
+                        "此工作流程**不會** force-push，也沒有其他自動解衝突步驟。請在本機合併上游、解決衝突後再推送，推送時不要使用 `--force`。",
+                        "",
+                        "```bash",
+                        `git fetch ${parentUrl} ${parentBranch}`,
+                        `git checkout ${branch}`,
+                        "git merge FETCH_HEAD",
+                        "```",
+                        "",
+                        `- 執行紀錄：${runUrl}`,
+                      ].join("\n"),
+                    });
+                    issueNote = `已開啟 issue：${created.html_url}`;
+                    core.warning(issueNote);
+                  }
+                } catch (issueError) {
+                  const issueMessage =
+                    issueError.response?.data?.message || issueError.message;
+                  issueNote = `衝突 issue 開立失敗：${issueMessage}`;
+                  core.error(issueNote);
+                }
+              } else {
+                core.warning(issueNote);
+              }
+
+              await fail(`${title}。`, issueNote);
+            }
+
+            const line = `同步完成：${synced.message}（merge_type=${synced.merge_type}，base_branch=${synced.base_branch}）`;
+            core.info(line);
+            await core.summary
+              .addHeading("上游同步完成")
+              .addList([
+                `本 fork：${owner}/${repo} 的 \`${branch}\``,
+                `上游：${parentFull} 的 \`${parentBranch}\``,
+                line,
+              ])
+              .write();
